@@ -27,7 +27,6 @@ Layout:
 		(se eksempel)
 	- bruk mellomrom. sett mellomrom mellom f eks "=", "+" og lignende
 	- bruk whitespace. det er din venn. alle andre blir også glad.
-	- prøv å legge variabler og kommentarer på linje (se eksempel)
 
 Kommentarer skal:
 	- skrives om du føler du trenger å forklare koden
@@ -42,7 +41,7 @@ Kommentarer skal:
 
 Navn skal:
 	- skrives i snakeCase. (snakeCase: stor bokstav skiller ord)
-		(for at stilen skal gå i et med arduino og zumo bibliotek)
+		(dette er for at stilen skal gå i et med arduino og zumo bibliotek)
 	- gi mening, leseren skal forstå hva som ligger i navnet
 	- være over to bokstaver
 		(hvis det ikke er vanlgie navn som "i", "x", eller "y")
