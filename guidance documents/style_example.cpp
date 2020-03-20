@@ -7,12 +7,12 @@
 */
 
 //constants
-const  SOMEVALUE = 100;
+const SOMEVALUE = 100;
 const OTHERVALUE = 2;
 
 //global variables
 uint8_t someVariable = 100;
-bool   otherVariable = true;
+bool    otherVariable = true;
 
 bool isGreater(uint8_t someNumber, uint8_t otherNumber) {
   /*
