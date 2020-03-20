@@ -54,3 +54,5 @@ Navn skal:
 		- "is" hvis det er en funksjon som returnerer en bool
 		- "get" hvis det er en funksjon som henter og returnerer en verdi
 		- "set" hvis det er en funksjon som setter en verdi
+
+		
