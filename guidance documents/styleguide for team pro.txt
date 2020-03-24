@@ -45,8 +45,8 @@ Navn skal:
 	- gi mening, leseren skal forstå hva som ligger i navnet
 	- være over to bokstaver
 		(hvis det ikke er vanlgie navn som "i", "x", eller "y")
-	- være i caps om de er konstanter som ikke skal endre seg
-		(typisk konstanter brukt i utregninger)
+	- være i caps om de er konstanter som ikke skal endre seg.
+		(typisk konstanter brukt i utregninger. Undersore brukes for å skille ord)
 	- ha en lengde som reflekterer hvilket scope de er i
 		f. eks en global variabel bør ha et lenger navn en en lokal variabel
 	- starte med:
@@ -54,5 +54,3 @@ Navn skal:
 		- "is" hvis det er en funksjon som returnerer en bool
 		- "get" hvis det er en funksjon som henter og returnerer en verdi
 		- "set" hvis det er en funksjon som setter en verdi
-
-		

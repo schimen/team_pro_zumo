@@ -7,8 +7,8 @@
 */
 
 //constants
-const SOMEVALUE = 100;
-const OTHERVALUE = 2;
+const SOME_VALUE = 100;
+const OTHER_VALUE = 2;
 
 //global variables
 uint8_t someVariable = 100;
@@ -39,7 +39,7 @@ void loop() {
   /*
   loop function
   */
-  if isGreater(SOMEVALUE, OTHERVALUE) {
+  if isGreater(SOME_VALUE, OTHER_VALUE) {
     doNothing();
   }
 }
