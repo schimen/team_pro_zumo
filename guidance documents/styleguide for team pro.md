@@ -1,4 +1,4 @@
-***	Kode stil for Team Pro	***
+#	Kode stil for Team Pro
 
 Koden vi skriver i dette prosjektet skal kunne leses og forstås av alle.
 Det er derfor viktig at vi legger et sterkt fokus på å skrive oversiktilig,
