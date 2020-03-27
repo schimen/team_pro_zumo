@@ -6,19 +6,20 @@ forståelig og likt.
 Derfor setter vi noen klare regler på
 hvordan koden skal skrives med tanke på stil:
 
-Se eksempelet "style_example.cpp"
+Se eksempelet:
+https://github.com/schimen/team_pro_zumo/blob/master/guidance%20documents/style_example.cpp
 
 Her er reglene mine:
 (om noen vil endre/legge til noe så bare si ifra :D)
 
-###Generelt:
+**Generelt**:
 * skriv alt på engelsk.
 * skriv funksjoner for så og si alt.
 	Er det en operasjon som bør forklares? Er det kode som tar mye plass?
 	Kode blir mye ryddigere med mye funksjoner
 * prøv å bruke lokale variabler så langt det lar seg gjøre
 
-###Layout:
+**Layout**:
 * ingen linjer skal ha mer enn 100 tegn. (inkludert mellomrom)
 * ikke vær redd for å bruke plass. (her mener jeg plass vertikalt)
 	Det er god plass så gjør koden luftig og lettlest
@@ -28,7 +29,7 @@ Her er reglene mine:
 * bruk mellomrom. sett mellomrom mellom f eks "=", "+" og lignende
 * bruk whitespace. det er din venn. alle andre blir også glad.
 
-###Kommentarer skal:
+**Kommentarer skal**:
 * skrives om du føler du trenger å forklare koden
 	(hvis du har en liten følelse av at dette bør forklares, forklar det)
 * skrives i starten av hvert funksjon.
@@ -39,7 +40,7 @@ Her er reglene mine:
 
 (viktig: God kode trenger ikke mange kommentarer, den forklarer seg selv)
 
-###Navn skal:
+**Navn skal**:
 * skrives i snakeCase. (snakeCase: stor bokstav skiller ord)
 	(dette er for at stilen skal gå i et med arduino og zumo bibliotek)
 * gi mening, leseren skal forstå hva som ligger i navnet
