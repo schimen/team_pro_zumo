@@ -7,7 +7,7 @@ Derfor setter vi noen klare regler på
 hvordan koden skal skrives med tanke på stil:
 
 Se eksempelet:
-https://github.com/schimen/team_pro_zumo/blob/master/guidance%20documents/style_example.cpp
+[style_example.cpp](https://github.com/schimen/team_pro_zumo/blob/master/guidance%20documents/style_example.cpp)
 
 Her er reglene mine:
 (om noen vil endre/legge til noe så bare si ifra :D)
