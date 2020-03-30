@@ -13,17 +13,17 @@
 * III. dashboard
   * a. done
   * b. done (skjønner ikke helt hva han mener men OK)
-* IV.
+* IV. gjennomsnittsverdien
   * a. done
   * b. done (klarer ikke få den til å starte på 10 i appen)
-* V.
+* V. max/min og alarm
   * a. done
   * b. må lage blinkende lys og buzzer alarm
   * c. kanskje vi klarer å få lagt inn et alarmelement i blynk?
   * d. gjort litt for servoen men er ikke ferdig
-* VI.
+* VI. test av servoen
   * a. du fucket deg selv over med å bruke delay her, lag funksjonen på nytt men bruk timer denne gangen.
-* VII.
+* VII. vise sensordata på en nettside (vanskelig)
   * a. veldig spent på å se hva nilo kommer opp med
 
 * annet
