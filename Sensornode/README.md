@@ -6,25 +6,36 @@
 *Bruk*
 * skriv dette seinere
 
+*Progress*
+* så og si ferdig med den vanlige modulen bare småting:
+  * siste finish på servodelen
+  * alarmelement i blynk?
+  * putte inn noen faktiske sensorer istedenfor sensor1, sensor2 og sensor3
+
+* mye arbeid igjen på webside delen (regner jeg med)
+
 *TODO*
 * II. sensoravlesninger
-  * a. done
-  * b. done
+  * a) done
+  * b) done
 * III. dashboard
-  * a. done
-  * b. done (skjønner ikke helt hva han mener men OK)
+  * a) done
+  * b) done (skjønner ikke helt hva han mener men OK)
 * IV.
-  * a. done
-  * b. done (klarer ikke få den til å starte på 10 i appen)
+  * a) done
+  * b) done (klarer ikke få den til å starte på 10 i appen)
 * V.
-  * a. done
-  * b. må lage blinkende lys og buzzer alarm
-  * c. kanskje vi klarer å få lagt inn et alarmelement i blynk?
-  * d. gjort litt for servoen men er ikke ferdig
+  * a) done
+  * b) done
+  * c) kanskje vi klarer å få lagt inn et alarmelement i blynk?
+  * d) mangler skiftende ytterposisjon ved slutt, burde ikke være mye arbeid
 * VI.
-  * a. du fucket deg selv over med å bruke delay her, lag funksjonen på nytt men bruk timer denne gangen.
+  * a) samme som ved V. d)
 * VII.
-  * a. veldig spent på å se hva nilo kommer opp med
+  * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
 
 * annet
-  * du må kommentere og rydde opp i koden. implementer de siste delene av oppgaven.
+  * skriv ordentlig introduksjon til programmet. begynn på rapporten.
+  * **ro ned valorant**
+  * prøv å fiks den derre døgnrytmen alle snakker om
+  * håper viruset går over snart, pils er ikke det samme hvis den ikke koster 90kr
