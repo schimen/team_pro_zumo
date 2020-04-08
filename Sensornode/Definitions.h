@@ -3,11 +3,11 @@
 */
 
 //wifi credentials, IP address, port and blynk authorization
-#define SSID "Einenett"
-#define PASSWORD "Larsehagan14"
+#define SSID "yourWifiHere"
+#define PASSWORD "yourPasswordHere"
 #define IP 91,192,221,40
 #define PORT 8080
-#define AUTH "xg7VAxJBTHMktDhmX8ZwidPa6ZSMjm4w"
+#define AUTH "yourAuthHere"
 
 //ESP32 gpio pins
 #define LED_PIN 25
