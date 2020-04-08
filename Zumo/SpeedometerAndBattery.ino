@@ -25,7 +25,7 @@
 Zumo32U4Encoders encoders;
 
 //--------Global-----
-const int SEVENTY_LIMIT = 50; //Grensen for 70% av bilens maxhastighet. LEGG INN SPEEDOMETERVETDIEN(M/S)! 50 ER ARBITRÆRT!
+const int SEVENTY_LIMIT = 50; //Grensen for 70% av bilens maxhastighet. LEGG INN SPEEDOMETERVERDIEN(M/S)! 50 ER ARBITRÆRT!
 
 int speedSixtyFinal;      //Verdien tas vare på for å printe til BLYNK, selv om en ny måling blir gjennomført
 int distanceSixtyFinal;   //Verdien tas vare på for å printe til BLYNK, selv om en ny måling blir gjennomført
