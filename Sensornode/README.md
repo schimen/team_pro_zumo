@@ -15,23 +15,23 @@
 * mye arbeid igjen på webside delen (regner jeg med)
 
 *TODO*
-* II. sensoravlesninger
+* II. *sensoravlesninger*
   * a) done
   * b) done
-* III. dashboard
+* III. *dashboard*
   * a) done
   * b) done (skjønner ikke helt hva han mener men OK)
-* IV.
+* IV. *gjennomsnittsverdien*
   * a) done
   * b) done (klarer ikke få den til å starte på 10 i appen)
-* V.
+* V. *max/min og alarm*
   * a) done
   * b) done
   * c) kanskje vi klarer å få lagt inn et alarmelement i blynk?
   * d) mangler skiftende ytterposisjon ved slutt, burde ikke være mye arbeid
-* VI.
+* VI. *test av servoen*
   * a) samme som ved V. d)
-* VII.
+* VII. *vise sensordata på en nettside (vanskelig)*
   * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
 
 * annet
