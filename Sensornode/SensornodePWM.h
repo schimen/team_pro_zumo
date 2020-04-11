@@ -9,8 +9,8 @@ class PWM {
   public:
 
     //constructor of PWM class.
-    //       channel,        pin,        frequency,       resolution
-    PWM(uint8_t chan, uint8_t pin, double freq = 50, uint8_t res = 8);
+    //       channel,        pin,       resolution,       frequency
+    PWM(uint8_t chan, uint8_t pin, uint8_t res = 8, double freq = 50);
 
     //save new duty cycle and write it to channel
     void setDuty(uint16_t newDuty);
@@ -37,12 +37,23 @@ class PWM {
     //turn off channel (duty cycle to zero)
     void setOff();
 
+    //sets servo to endPoint and alternates end side
+    void setEnd();
+
+    //change the value of endPoint to the opposite of last endPoint
+    void changeEnd();
+
     //return true if duty cycle is more than zero
     bool isOn();
 
+    //return true if duty cycle is equal to the endpoint
+    bool isEnd();
+
+
   private:
-    uint16_t dutyCycle;
     uint8_t  channel;
+    uint16_t endPoint;
+    uint16_t dutyCycle;
     double   frequency;
 };
 

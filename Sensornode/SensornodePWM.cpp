@@ -1,13 +1,14 @@
 #include "SensornodePWM.h"
 #include "Definitions.h"
 
-PWM::PWM(uint8_t chan, uint8_t pin, double freq, uint8_t res) {
+PWM::PWM(uint8_t chan, uint8_t pin, uint8_t res, double freq) {
   /*
   constructor for class. save channel and frequency.
   set up channel and attach pin to channel
-  (default freq = 50 because it is a common PWM frequency
-   default res = 8   because it is a common PWM resolution)
+  (default res = 8   because it is a common PWM resolution
+   default freq = 50 because it is a common PWM frequency)
   */
+  endPoint = SERVO_RIGHT;
   channel = chan;
   frequency = freq;
   ledcSetup(channel, frequency, res);
@@ -29,6 +30,30 @@ void PWM::setDegree(uint8_t degree) {
   setDuty(map(degree, MIN_DEGREE, MAX_DEGREE, SERVO_LEFT, SERVO_RIGHT));
 }
 
+void PWM::setTone(double freq) {
+  /*
+  sets a frequency to the buzzer
+  */
+  frequency = freq;
+  ledcWriteTone(channel, frequency);
+}
+
+void PWM::setOff()  {
+  /*
+  turn off channel
+  */
+  ledcWrite(channel, 0);
+}
+
+void PWM::setEnd()  {
+  /*
+  sets the servo to the endpoint and alternates the endpoint
+  first change the point for end, then set position to new point
+  */
+  changeEnd();
+  setDuty(endPoint);
+}
+
 void PWM::changeDuty(int16_t change) {
   /*
   sets new duty cycle as sum of old duty cycle and change
@@ -47,9 +72,9 @@ void PWM::changeDegree(int8_t degreeChange) {
 
 uint16_t PWM::getDuty()  {
   /*
-  return dutyCycle
+  return duty cycle of channel
   */
-  return dutyCycle;
+  return ledcRead(channel);
 }
 
 uint8_t PWM::getDegree() {
@@ -59,26 +84,36 @@ uint8_t PWM::getDegree() {
   return map(dutyCycle, SERVO_LEFT, SERVO_RIGHT, MIN_DEGREE, MAX_DEGREE);
 }
 
-void PWM::setTone(double freq) {
+void PWM::changeEnd()  {
   /*
-  sets a frequency to the buzzer
+  if endpoint is right, set endpoint to left and opposite
   */
-  frequency = freq;
-  ledcWriteTone(channel, frequency);
-}
-
-void PWM::setOff()  {
-  /*
-  turn off channel
-  */
-  ledcWrite(channel, 0);
+  if (endPoint == SERVO_LEFT) {
+    endPoint = SERVO_RIGHT;
+  }
+  else  {
+    endPoint = SERVO_LEFT;
+  }
 }
 
 bool PWM::isOn()  {
   /*
   check if duty cycle on channel is more than zero and return true/false
   */
-  if (ledcRead(channel) > 0)  {
+  if (getDuty() > 0)  {
+    return true;
+  }
+  else  {
+    return false;
+  }
+}
+
+bool PWM::isEnd() {
+  /*
+  check if duty cycle is close to the endpoint and return true/false
+  */
+  if (getDuty() >= (endPoint - SERVO_STEP) and
+      getDuty() <= (endPoint + SERVO_STEP))  {
     return true;
   }
   else  {
