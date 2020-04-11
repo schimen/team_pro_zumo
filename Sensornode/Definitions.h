@@ -3,11 +3,11 @@
 */
 
 //wifi credentials, IP address, port and blynk authorization
-#define SSID "Einenett"
-#define PASSWORD "Larsehagan14"
+#define SSID "YourSSIDHere"
+#define PASSWORD "YourWiFiPasswordHere"
 #define IP 91,192,221,40
 #define PORT 8080
-#define AUTH "xg7VAxJBTHMktDhmX8ZwidPa6ZSMjm4w"
+#define AUTH "YourAuthorizationKeyHere"
 
 //ESP32 gpio pins
 #define LED_PIN 25
@@ -36,7 +36,7 @@
 #define SERVO_SLIDER V15
 
 //timer intervals
-#define SERVOTEST_PAUSE 50L
+#define SERVO_MOVE_INTERVAL 200L
 #define ALARM_INTERVAL 500L
 #define READINGS_INTERVAL 500L
 #define MAX_MIN_INTERVAL 30000L
@@ -63,4 +63,4 @@
 #define SERVO_RIGHT 1700
 #define MIN_DEGREE 0
 #define MAX_DEGREE 180
-#define SERVO_STEP 100
+#define SERVO_STEP 200
