@@ -28,9 +28,9 @@
   * a) done
   * b) done
   * c) kanskje vi klarer å få lagt inn et alarmelement i blynk?
-  * d) mangler skiftende ytterposisjon ved slutt, burde ikke være mye arbeid
+  * d) done
 * VI. *test av servoen*
-  * a) samme som ved V. d)
+  * a) done
 * VII. *vise sensordata på en nettside (vanskelig)*
   * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
 
@@ -39,3 +39,11 @@
   * **ro ned valorant**
   * prøv å fiks den derre døgnrytmen alle snakker om
   * håper viruset går over snart, pils er ikke det samme hvis den ikke koster 90kr
+
+*Terminologi*
+  * javascript, ajax
+  * html, css
+  * static
+  * class, object, method
+  * reference/pointer
+  * kanskje mer, kom med innspill!
