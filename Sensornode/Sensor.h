@@ -32,14 +32,20 @@ class Sensor {
     //bool reset will set minValue to maximum if true
     static uint16_t getMin(bool reset = true);
 
+    //returns true if new average is ready
+    bool isNewAverage();
+
+    //returns true if 2 or more sensors are over allowed value
+    static bool isAlarm();
+
     //public variables
-    bool            newAverage;  //signal if new average value is available
-    static uint8_t  averageCount;   //number of reads for new average value
     static uint8_t  sensorsOverMax; //number of sensors over maxAllowed value
+    static uint8_t  averageCount;   //number of reads for new average value
     static uint16_t maxValue; //maximum value of all sensors
     static uint16_t minValue; //minimum value of all sensors
 
   private:
+    bool     newAverage;  //true if new average value is available
     bool     overMax; //signal if sensor is over max allowed value
     uint8_t  pin;
     uint8_t  readCount; //number of reads of sensor (resets on getAverage())

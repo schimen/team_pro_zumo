@@ -89,3 +89,22 @@ uint16_t Sensor::getMin(bool reset) {
   }
   return value;
 }
+
+bool Sensor::isNewAverage() {
+  /*
+  return newAverage
+  */
+  return newAverage;
+}
+
+bool Sensor::isAlarm()  {
+  /*
+  returns true if number of sensors over max value is 2 or more.
+  */
+  if (sensorsOverMax >= 2) {
+    return true;
+  }
+  else  {
+    return false;
+  }
+}
