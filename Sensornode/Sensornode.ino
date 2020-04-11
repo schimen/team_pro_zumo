@@ -7,9 +7,9 @@
     This is a program for ESP32 to speak to blynk app: (insert url)
 
 Todo:
-  - make servo end at endpoint (moveServo fctn)
-  - make servo alternate between endpoints (moveServo fctn)
   - description of program (this comment)
+  - make code more readable
+  - clean up unneccessary functions
 */
 
 #include <WiFi.h>
@@ -20,13 +20,13 @@ Todo:
 #include "Definitions.h" //Definitions here for a cleaner code
 
 //start values of static members of Sensor class:
-uint8_t        Sensor::averageCount = 10; //Number of reads per average value.
-uint8_t        Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
-uint16_t       Sensor::maxValue = MIN_READ;   // Maximum and minimum
-uint16_t       Sensor::minValue = MAX_READ;   // measured value.
+uint8_t  Sensor::averageCount = 10; //Number of reads per average value.
+uint8_t  Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
+uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
+uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
 //objects:
-PWM            servo(SERVO_CHANNEL, SERVO_PIN, 50, 16);  //channel, pin,
+PWM            servo(SERVO_CHANNEL, SERVO_PIN, 16);      //channel, pin,
 PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);       //freq=50, res=8
 Sensor         sensor1(SENSOR1_PIN, SENSOR1_MAX);  //pin, max allowed value
 Sensor         sensor2(SENSOR2_PIN, SENSOR2_MAX);  //   (before alarm starts)
@@ -34,6 +34,7 @@ Sensor         sensor3(SENSOR3_PIN, SENSOR3_MAX);
 WidgetTerminal terminal(TERMINAL_PIN);
 BlynkTimer     timer;
 
+bool     servoTestOn = false;
 bool     blynkShowAll = false;
 uint8_t  blynkMenuSelection = 1;
 uint16_t servoTimer;
@@ -45,7 +46,7 @@ void alarm()  {
   This function should be called in a timer.
   */
   static bool state = false;  //only initialized first function call
-  state = !state;
+  state = not state;
 
   if (state)  {
     buzzer.setTone(BUZZER_HIGH);
@@ -72,20 +73,21 @@ void checkAlarm() {
 
   //make timer for alarm on first function call:
   static uint8_t alarmTimer = timer.setInterval(ALARM_INTERVAL, alarm);
-  static bool timerEnabled = timer.isEnabled(alarmTimer);
+  static bool alarmTimerEnabled = timer.isEnabled(alarmTimer);
 
-  if (Sensor::sensorsOverMax >= 2 and not timerEnabled)  {
-    timer.enable(alarmTimer);
-    timer.enable(servoTimer);
-    timerEnabled = timer.isEnabled(alarmTimer);
+  if (not alarmTimerEnabled) {
+    if (Sensor::isAlarm())  {
+      timer.enable(alarmTimer);
+      timer.enable(servoTimer);
+      alarmTimerEnabled = timer.isEnabled(alarmTimer);
+    }
+    else if (buzzer.isOn())  {
+      resetAlarm();
+    }
   }
-  else if (Sensor::sensorsOverMax < 2 and timerEnabled)  {
+  else if (not Sensor::isAlarm()) {
     timer.disable(alarmTimer);
-    timer.disable(servoTimer);
-    timerEnabled = timer.isEnabled(alarmTimer);
-  }
-  if (buzzer.isOn() and not timerEnabled)  {
-    resetAlarm();
+    alarmTimerEnabled = timer.isEnabled(alarmTimer);
   }
 }
 
@@ -109,7 +111,7 @@ void sendDetailed(Sensor *sensor, bool reset) {
   Blynk.virtualWrite(CURRENT_VALUE_PIN, value); //send read value
   terminal.print("  value: ");  //print read value
   terminal.println(value);      //on terminal
-  if (sensor->newAverage) {
+  if (sensor->isNewAverage()) {
     uint16_t average = sensor->getAverage(reset);
     Blynk.virtualWrite(AVERAGE_VALUE_PIN, average); //send average value
     terminal.print("average: ");  //print average value
@@ -124,7 +126,9 @@ void sendAll()  {
   Blynk.virtualWrite(DB_SENSOR1, sensor1.getValue());
   Blynk.virtualWrite(DB_SENSOR2, sensor2.getValue());
   Blynk.virtualWrite(DB_SENSOR3, sensor3.getValue());
-  if (sensor1.newAverage or sensor2.newAverage or sensor3.newAverage) {
+  if (sensor1.isNewAverage() or
+      sensor2.isNewAverage() or
+      sensor3.isNewAverage()) {
     Blynk.virtualWrite(DB_AVERAGE1, sensor1.getAverage());
     Blynk.virtualWrite(DB_AVERAGE2, sensor2.getAverage());
     Blynk.virtualWrite(DB_AVERAGE3, sensor3.getAverage());
@@ -135,11 +139,9 @@ void readSensors()  {
   /*
   Read sensors
   */
-
   sensor1.read();
   sensor2.read();
   sensor3.read();
-
   checkAlarm(); //check for alarm criteria every sensor read
 }
 
@@ -193,21 +195,24 @@ void moveServo()  {
     change = SERVO_STEP;
   }
   servo.changeDuty(change);
+  Blynk.virtualWrite(SERVO_SLIDER, servo.getDegree());
+
+  //check for stop requirements:
+  if (servo.isEnd() and not Sensor::isAlarm() and not servoTestOn) {
+    timer.disable(servoTimer);
+    servo.changeEnd();  //change side for servo to stop
+  }
 }
 
 BLYNK_WRITE(SERVOTEST_BUTTON)  {
   /*
   called on new value for servotest button in blynk app
   Starts and ends servotest
-  Function and servotest not finished. please finish this :)
   */
-  bool servoTestOn = param.asInt();
+  servoTestOn = param.asInt();
 
   if (servoTestOn) {
     timer.enable(servoTimer);
-  }
-  else  {
-    timer.disable(servoTimer);
   }
 }
 
@@ -230,8 +235,7 @@ BLYNK_WRITE(SHOW_ALL_PIN) {
 BLYNK_WRITE(AVERAGE_COUNT_SLIDER) {
   /*
   called on new value for averageCount slider in blynk app.
-  Updates avera
-  geCount
+  Updates averageCount
   */
   Sensor::averageCount = param.asInt();
 }
@@ -248,17 +252,15 @@ void setup() {
   /*
   setup code
   Set up:
-    Serial, blynk, sendReadings timer, sendMaxMin timer,
+    Blynk, sendReadings timer, sendMaxMin timer,
     servo loop and LED_PIN as OUTPUT
   */
   Blynk.begin(AUTH, SSID, PASSWORD, IPAddress(IP), PORT);
   timer.setInterval(READINGS_INTERVAL, sendReadings);
   timer.setInterval(MAX_MIN_INTERVAL, sendMaxMin);
-  servoTimer = timer.setInterval(SERVOTEST_PAUSE, moveServo);
+  servoTimer = timer.setInterval(SERVO_MOVE_INTERVAL, moveServo);
   timer.disable(servoTimer);
   pinMode(LED_PIN, OUTPUT);
-
-  Serial.begin(9600);
 }
 
 void loop() {
@@ -268,5 +270,5 @@ void loop() {
     blynk, timer
   */
   Blynk.run();  //starts blynk
-  timer.run();  //starts all timers on timer object
+  timer.run();  //starts all enabled timers on timer object
 }
