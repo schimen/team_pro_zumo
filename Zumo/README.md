@@ -1,12 +1,19 @@
 # Modul: Egendefinert
 
 *Beskrivelse*
-  * dette fikser dere
+  * Linjekjøring
+  * BLYNK-kjøring
+  * Speedometer
+  * Batteristyring
+  * ???
+  * Profit
 
 *Bruk*
-  * hvordan bruker man programmet deres?
+  * Smør på et tynt lag, morgen og kveld.
 
 *TODO*
-  * sett opp READMEen deres hvordan dere vil, bare får det oversiktlig og pent.
-  * vi burde kanskje finne en standard for disse dokumentene også, kanskje noe
-    som [dette](https://github.com/RichardLitt/standard-readme)
+  * Samle alle funksjoner fra alle script, og lagre i et bibliotek
+  * Sy sammen all kode fra både Torje og Line. Thats a helluva job.
+  * Glhf med det, Line!
+  * Teste feilsøke teste feilsøke
+  * teste feilsøke
