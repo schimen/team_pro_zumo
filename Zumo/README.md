@@ -12,8 +12,8 @@
   * Smør på et tynt lag, morgen og kveld.
 
 *TODO*
-  * Samle alle funksjoner fra alle script, og lagre i et bibliotek
-  * Sy sammen all kode fra både Torje og Line. Thats a helluva job.
-  * Glhf med det, Line!
-  * Teste feilsøke teste feilsøke
-  * teste feilsøke
+  * Slå sammen alle funksjoner for Zumo, og lag bibliotek
+  * Lag en Zumo_Master, som faktisk skal lastes opp på Zumo in the end.
+  * ???
+  * Profit
+  
