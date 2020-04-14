@@ -1,18 +1,13 @@
-/*
-Class for sensors used in Sensornode
-
-todo:
-  - make actual good comments
-  - clean up ugly code
-*/
-
 #include "Sensor.h"
+#include "Definitions.h"
 
-Sensor::Sensor(uint8_t sensorPin) {
+Sensor::Sensor(uint8_t sensorPin, uint16_t max) {
   /*
-  generator
+  constructor. saves pin, and maxAllowed
+  sets start value for readCount, cumulativeValue and newAverage
   */
   pin = sensorPin;
+  maxAllowed = max;
   readCount = 0;
   cumulativeValue = 0;
   newAverage = false;
@@ -20,13 +15,26 @@ Sensor::Sensor(uint8_t sensorPin) {
 
 void Sensor::read() {
   /*
-  read sensor
+  read sensor.
+  On read :
+    increase readCount, increase cumulativeValue, check for new average,
+    check if sensors are over max allowed, check if sensors over max,
+    store read value as sensorValue
   */
   uint16_t value = analogRead(pin);
+
   readCount++;
   cumulativeValue = cumulativeValue + sensorValue;
   if (readCount >= averageCount)  {
     newAverage = true;
+  }
+  if (sensorValue > maxAllowed and not overMax) {
+    sensorsOverMax++;
+    overMax = true;
+  }
+  else if (sensorValue < maxAllowed and overMax) {
+    sensorsOverMax--;
+    overMax = false;
   }
   if (sensorValue > maxValue) {
     maxValue = value;
@@ -44,13 +52,13 @@ uint16_t Sensor::getValue() {
   return sensorValue;
 }
 
-uint16_t Sensor::getAverage(bool resetCount) {
+uint16_t Sensor::getAverage(bool reset) {
   /*
-  return value and reset readcount and cumulative value
-  if resetcount is true
+  Return average value (cumulativeValue / readCount)
+  Reset readCount, cumulativeValue and newAverage if resetCount is true.
   */
   uint16_t average = cumulativeValue / readCount;
-  if (resetCount) {
+  if (reset) {
     readCount = 0;
     cumulativeValue = 0;
     newAverage = false;
@@ -58,22 +66,45 @@ uint16_t Sensor::getAverage(bool resetCount) {
   return average;
 }
 
-uint16_t Sensor::getMin() {
+uint16_t Sensor::getMax(bool reset) {
   /*
-  return minimum value and
-  set minimum value to max possible value
+  return maximum value
+  if reset: set max value to minimum possible value
   */
-  uint16_t value = minValue;
-  minValue = MAX_READ;
+  uint16_t value = maxValue;
+  if (reset)  {
+    maxValue = MIN_READ;
+  }
   return value;
 }
 
-uint16_t Sensor::getMax() {
+uint16_t Sensor::getMin(bool reset) {
   /*
-  return max value and set max value
-  to minimum possible value
+  return minimum value and
+  if reset: set minimum value to maximum possible value
   */
-  uint16_t value = maxValue;
-  maxValue = MIN_READ;
+  uint16_t value = minValue;
+  if (reset)  {
+    minValue = MAX_READ;
+  }
   return value;
+}
+
+bool Sensor::isNewAverage() {
+  /*
+  return newAverage
+  */
+  return newAverage;
+}
+
+bool Sensor::isAlarm()  {
+  /*
+  returns true if number of sensors over max value is 2 or more.
+  */
+  if (sensorsOverMax >= 2) {
+    return true;
+  }
+  else  {
+    return false;
+  }
 }
