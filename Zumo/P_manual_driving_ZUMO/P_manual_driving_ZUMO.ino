@@ -107,7 +107,7 @@ void charge() {
     }
   }
   chargeCheck = false;
-  buzzer.noTone();
+  buzzer.stopPlaying();
 }
 
 

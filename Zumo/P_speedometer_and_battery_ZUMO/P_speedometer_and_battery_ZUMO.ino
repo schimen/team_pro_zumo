@@ -20,7 +20,6 @@ Todo:
 Slå sammen med alle andre funksjoner for Zumo, og lag bibliotek
 
 */
-//
 
 #include <Zumo32U4.h>
 #include <EEPROM.h>
@@ -107,7 +106,6 @@ void speedCheck() { //Brukes til å beregne hastigheten til gjennomsnittsforflyt
   if(speedo <= 0) { //Hvis man snurrer om sin egen akse har man ikke fart, og det skal ikke påvirke snittfarta.
     speedo = 0;
     numSixty--;
-    Serial.println("NULL REGISTRERT");
   }
   if (speedo >  maxSpeed) { //Historisk mål for høyeste hastighet
     maxSpeed = speedo;
@@ -177,8 +175,7 @@ bool lowBattery = false;
 void batteryCheck() {
   batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
   batteryLeft -=(speedo * (movementTime/1000)); //Samme som distansen, men med egen teller. Oppgitt i meter.
-  //Serial.print("batteryLeft: ");
-  //Serial.println(batteryLeft);
+  
   if (squareDriven == true) {
     charged  = BATTERY_MAX / 20; //Lader 20% per runde med firkantkjøring
     batteryLeft += charged;
@@ -198,10 +195,6 @@ void batteryCheck() {
   }
   if (batteryLeft <= 15) lowBattery = true;
 }
-
-
-
-
 
 //-----------------writeToESP----------
 //Skriver alle nye verdier til ESP
