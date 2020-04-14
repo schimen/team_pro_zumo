@@ -1,70 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensor Data</title>
     
     <style>
+        .flex-Logo{
+            display: flex;
+            justify-content: flex-end;
+        }
         .flex-Container{
             display: flex;
         }
         .sensor-Card{
-            font-family: sans-serif;
-            max-width: 30vw;
-            min-width: 25vw;
-            min-height: 50vh;
+            font-family: 'Oswald', sans-serif;
+            max-width: 24vw;
+            min-width: 24vw;
+            min-height: 10vh;
             background: #d0fdf0;
             padding: 1vh;
+            padding-top: 0.1vh;
             padding-left: 3vh;
             margin: 1vh;
-            border-radius: 25px;
             box-sizing: border-box;
             box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
         }
-        .blink{
-            border-radius: 50%;
+        .control-Card{
+            font-family: sans-serif;
+            max-width: 24vw;
+            min-width: 24vw;
+            min-height: 10vh;
+            background: #bce4fd;
+            padding: 1vh;
+            padding-left: 3vh;
+            margin: 1vh;
+            box-sizing: border-box;
+            box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
+        }
+        .plot-Card{
+            font-family: sans-serif;
+
+        }
+        .logo{
+            width: 15vw;
+            height: 15vh;
+        }
+        body{
+            background: #6a767a;
         }
         h1{
-            font-family: monospace;
-            font-size: 1.8em;
+            font-family: 'Oswald', monospace;
+            font-size: 2.5em;
         }
         table{
             font-family: sans-serif;
             width: 100%;
+        }
+        td{
+            font-size: 1.3em;
         }
     </style>
 </head>
 <body>
     <div class ="flex-Container">
         <div class="sensor-Card">
-            <h1>Sensor 1</h1>
+            <h1>Values</h1>
             <table>
                 <tr>
-                    <td>Value: </td>
+                    <td>Sensor 1: </td>
                     <td id="sens1Val">0</td>
                 </tr>
                 <tr>
-                    <td>Min. value: </td>
-                    <td id="sens1Min">0</td>
+                    <td>Sensor 2:  </td>
+                    <td id="sens2Val">0</td>
                 </tr>
                 <tr>
-                    <td>Max. value: </td>
-                    <td id="sens1Max">0</td>
-                </tr>
-                <tr>
-                    <td>Average pr. 10 readings: </td> <!--Ask Simen how man avg-->
-                    <td id="sens1Avg">0</td>
+                    <td>Sensor 3: </td>
+                    <td id="sens3Val">0</td>
                 </tr>
             </table>
-            <div class="blink" id="sens1Blink"></div>
         </div>
         <div class="sensor-Card">
-            <h1>Sensor 2</h1>
+            <h1>Average</h1>
+            <table>
+                <tr>
+                    <td>Sensor 1: </td>
+                    <td id="sens1avg">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 2:  </td>
+                    <td id="sens2avg">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 3: </td>
+                    <td id="sens3avg">0</td>
+                </tr>
+            </table>
         </div>
         <div class="sensor-Card">
-            <h1>Sensor 3</h1>
+            <h1>Max/Min</h1>
+            <table>
+                <tr>
+                    <td>Maxiumum: </td>
+                    <td id="max">0</td>
+                </tr>
+                <tr>
+                    <td>Miniumum:  </td>
+                    <td id="min">0</td>
+                </tr>
+            </table>
         </div>
+        <div class="control-Card">
+            <h1>Controls</h1>
+        </div>
+    </div>
+    <br>
+    <div class="flex-Logo">
+        <img class="logo" src="blynk_bootleg.svg" alt="blonk logo">
     </div>
 </body>
 </html>
