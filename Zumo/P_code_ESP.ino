@@ -3,7 +3,7 @@
   Den inneholder alt som skal være i ESP'en,
   for å binde sammen Zumoen og Blynk.
 */
-
+//
 
 #define BLYNK_PRINT Serial
 #include <WiFi.h>
