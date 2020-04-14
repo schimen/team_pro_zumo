@@ -28,7 +28,7 @@ void Sensor::read() {
   if (readCount >= averageCount)  {
     newAverage = true;
   }
-  if (sensorValue > maxAllowed and not overMax) {
+  if (sensorValue > maxAllowed and not overMax) { //Actually a Python Programmer lul
     sensorsOverMax++;
     overMax = true;
   }
