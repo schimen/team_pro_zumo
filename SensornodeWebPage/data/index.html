@@ -139,6 +139,17 @@
 
 <script>
 
+setInterval(sensorRequest(), 1000);
 
+function sensorRequest(){
+    var xhttp = new XMLHttpRequest(); //Make a new request
+    xhttp.onreadystatechange = function(){ //If request is handled do this
+        if(this.readyState == 4 && this.status = 200){ //Check if request is OK
+            document.getElementById("sens1val").innerHTML = this.responseText
+        }
+    };
+    xhttp.open("GET", "/sens1Val", true);
+    xhttp.send();
+}
 
 </script>
