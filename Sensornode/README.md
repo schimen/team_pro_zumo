@@ -47,4 +47,5 @@ men blynk skal være good
   * static
   * class, object, method
   * reference/pointer
+  * lambda expression
   * kanskje mer, kom med innspill!
