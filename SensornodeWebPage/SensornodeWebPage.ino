@@ -2,6 +2,10 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 
+#include "Sensor.h"  //sensor class for control of sensor reading
+#include "SensornodePWM.h"  //pwm class to control buzzer and servo
+#include "Definitions.h" //defintions class for cleaner code
+
 
 const char* ssid = "Marco";
 const char* pass = "7Mgb67HK";
@@ -38,6 +42,10 @@ void setup() {
   server.on("/midjoo.png", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/midjoo.png");
   });
+
+  server.on("/sensor1Val", [](AsyncWebServerRequest *request){
+    request->send(200, String(sensor1.getValue()))
+  })
 
   server.begin();
 }
