@@ -90,7 +90,7 @@ void setup() {
     request->send(SPIFFS, "/midjoo.png");
   });
   server.on("/blynk_bootleg.svg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/blynkbootleg.svg")
+    request->send(SPIFFS, "/blynk_bootleg.svg");
   });
 
 

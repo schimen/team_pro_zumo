@@ -50,7 +50,7 @@ uint16_t Sensor::getValue(bool read) {
   return value
   */
   if (read) {
-    read();
+    Sensor::read();
   }
   
   return sensorValue;
