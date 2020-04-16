@@ -1,7 +1,8 @@
 # Modul: Sensornode
 
 *Beskrivelse*
-* skriv dette seinere
+* Dette er sensornode blynk og nettside. Nettsiden er enda under development
+men blynk skal være good
 
 *Bruk*
 * skriv dette seinere
@@ -27,7 +28,7 @@
 * V. *max/min og alarm*
   * a) done
   * b) done
-  * c) kanskje vi klarer å få lagt inn et alarmelement i blynk?
+  * c) få inn alarm i blynk
   * d) done
 * VI. *test av servoen*
   * a) done
@@ -46,4 +47,5 @@
   * static
   * class, object, method
   * reference/pointer
+  * lambda expression
   * kanskje mer, kom med innspill!
