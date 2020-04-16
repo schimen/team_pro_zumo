@@ -4,6 +4,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="blynk_bootleg.svg"
     <title>Sensor Data</title>
     
     <style>
@@ -94,15 +95,15 @@
             <table>
                 <tr>
                     <td>Sensor 1: </td>
-                    <td id="sens1avg">0</td>
+                    <td id="sens1Avg">0</td>
                 </tr>
                 <tr>
                     <td>Sensor 2:  </td>
-                    <td id="sens2avg">0</td>
+                    <td id="sens2Avg">0</td>
                 </tr>
                 <tr>
                     <td>Sensor 3: </td>
-                    <td id="sens3avg">0</td>
+                    <td id="sens3Avg">0</td>
                 </tr>
             </table>
         </div>
@@ -119,9 +120,11 @@
                 </tr>
             </table>
         </div>
+        <!--
         <div class="control-Card">
             <h1>Controls</h1>
         </div>
+        -->
     </div>
     <br>
     <div class="flex-Container">
@@ -139,17 +142,30 @@
 
 <script>
 
-setInterval(sensorRequest(), 1000);
+setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
+    sensorRequest("sens1Val");
+    sensorRequest("sens2Val");
+    sensorRequest("sens3Val");
 
-function sensorRequest(){
+    sensorRequest("sens1Avg");
+    sensorRequest("sens2Avg");
+    sensorRequest("sens3Avg");
+    
+    sensorRequest("min");
+    sensorRequest("max");
+}, 2000);
+
+
+function sensorRequest(ID){
     var xhttp = new XMLHttpRequest(); //Make a new request
     xhttp.onreadystatechange = function(){ //If request is handled do this
-        if(this.readyState == 4 && this.status = 200){ //Check if request is OK
-            document.getElementById("sens1val").innerHTML = this.responseText
+        if(this.readyState == 4 && this.status == 200){ //Check if request is OK
+            document.getElementById(ID).innerHTML = this.responseText;
         }
     };
-    xhttp.open("GET", "/sens1Val", true);
+    xhttp.open("GET", "/" + ID, true); //Open the request, second argument is "name" of the request
     xhttp.send();
 }
+
 
 </script>
