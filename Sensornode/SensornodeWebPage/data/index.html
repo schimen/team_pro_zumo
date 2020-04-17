@@ -129,19 +129,19 @@
     <br>
     <div class="flex-Container">
         <div class="sensor-Card">
-
+            <canvas id="realDocChart" width="400" height="400"></canvas>
         </div>
     </div>
     <br>
     <div class="flex-Logo">
         <img class="logo" src="blynk_bootlegLONG.svg" alt="blonk logo">
-        <img class="midjo" src="midjoo.png" alt="MidjoSkyen"
+        <img class="midjo" src="midjoo.png" alt="MidjoSkyen">
     </div>
 </body>
 </html>
-
+<script src="ChartBundle.js"></script>
 <script>
-
+/*
 setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
     sensorRequest("sens1Val");
     sensorRequest("sens2Val");
@@ -154,7 +154,7 @@ setInterval(function(){ //Need an anonymous funtion, because setInterval need fu
     sensorRequest("min");
     sensorRequest("max");
 }, 2000);
-
+*/
 
 function sensorRequest(ID){
     var xhttp = new XMLHttpRequest(); //Make a new request
@@ -167,5 +167,70 @@ function sensorRequest(ID){
     xhttp.send();
 }
 
+function updateChart(){
+    var lenOfLabels = realChartconfig.data.labels.length
+    realChartconfig.data.labels.push((lenOfLabels + 1).toString()) //Have to do this once for every 2 seconds, put this in setInterval
+    return;
+    //realChartconfig.data.datasets.forEach //datasets work as list so [0] will return the first dataset
+}
+
+var realDocChart = document.getElementById('realDocChart').getContext('2d');
+var realChartconfig = {
+    type: 'line',
+    data: {
+        labels: [1,2,3],
+        datasets: [{
+            label: 'Sensor 1',
+            backgroundColor: 'rgba(226, 106, 106, 1)',
+            borderColor: 'rgba(226, 106, 106, 1)',
+            data: [1,2,3],
+            fill: false,
+
+        },
+        {
+            label: 'Sensor 2',
+            backgroundColor: 'rgba(30, 139, 195, 1)',
+            borderColor: 'rgba(30, 139, 195, 1)',
+            data: [],
+            fill: false
+        },
+        {
+            label: 'Sensor 3',
+            backgroundColor: 'rgba(245, 215, 110, 1)',
+            borderColor: 'rgba(245, 215, 110, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here       
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Sensor Chart'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Sensor Value'
+                }
+            }
+        }
+    }
+};
+
+var realChart = new Chart(realDocChart, realChartconfig);
 
 </script>
