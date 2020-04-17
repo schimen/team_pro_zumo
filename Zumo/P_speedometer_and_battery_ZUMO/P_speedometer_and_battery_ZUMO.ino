@@ -38,7 +38,7 @@ int numSixty = 0;           //Teller for hvor mange summer speedSixty består av
 float avgSpeedSixty;        //Gjennomsnittshastighet hvert 60. sekund
 
 float speedo;             //Utregnet meter/sekund. Faktiske speedometerverdien.
-float maxSpeed = 0;       //Historisk mål for høyeste hastighet
+float measuredMaxSpeed = 0;       //Historisk mål for høyeste hastighet
 float speedLeft;            //Encoderverdi
 float speedRight;           //Encoderverdi
 unsigned long movementTime;         //Tiden for en bevegelse. Brukes for å regne ut hastigheten.
@@ -107,8 +107,8 @@ void speedCheck() { //Brukes til å beregne hastigheten til gjennomsnittsforflyt
     speedo = 0;
     numSixty--;
   }
-  if (speedo >  maxSpeed) { //Historisk mål for høyeste hastighet
-    maxSpeed = speedo;
+  if (speedo >  measuredMaxSpeed) { //Historisk mål for høyeste hastighet
+    measuredMaxSpeed = speedo;
     newMaxSpeed = true; //Markerer at ny verdi er klar til å sendes til Blynk
   }
   newSpeedo = true; //Markerer at et ny speedometerverdi er oppdatert, så kan den sendes til ESP
@@ -171,6 +171,7 @@ float batteryLeft = BATTERY_MAX; //Gjenstående batteri, i meter
 float batteryChargedTotal; //Totalt opplading av batteriet siden programmets start
 int batteryCapasity = BATTERY_MAX;
 bool lowBattery = false;
+unsigned long chargeTime;
 
 void batteryCheck() {
   batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
@@ -197,6 +198,7 @@ void batteryCheck() {
 }
 
 void chargeBattery() {
+  chargeTime = millis() + 3000; //MIDLERTITIG KONSTANT KUN FOR TESTING
   charged = ceil((millis() - chargeTime) / 1000); //Runder opp til nærmeste antall sek kjørt
   Serial.print(charged);
   for (int i = 6000; i > 10000; i += 1000) {
@@ -251,10 +253,10 @@ void writeToESP() {
   if (newMaxSpeed == true) {
     Serial1.write(5);
     delay(2);
-    Serial1.write(int(maxSpeed));
+    Serial1.write(int(measuredMaxSpeed));
 
     Serial.print("BLYNK MAXSPEED: ");
-    Serial.println(maxSpeed);
+    Serial.println(measuredMaxSpeed);
 
     newMaxSpeed = false;
   }
