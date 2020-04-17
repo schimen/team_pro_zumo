@@ -49,4 +49,6 @@
   * Async
   * Request
   * Handler
+  * Charts.js
   * kanskje mer, kom med innspill!
+  
