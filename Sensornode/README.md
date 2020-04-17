@@ -32,11 +32,11 @@
 * VI. *test av servoen*
   * a) done
 * VII. *vise sensordata på en nettside (vanskelig)*
-  * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
+  * a) Ferdig med live data holder på line charts
 
 * annet
   * skriv ordentlig introduksjon til programmet. begynn på rapporten.
-  * **ro ned valorant**
+  * **ro ned valorant** (Valorant betyr bare eg har kalkulator åpent. Discord finner det ikkje ennå, så for flexe har eg d på kalkis
   * prøv å fiks den derre døgnrytmen alle snakker om
   * håper viruset går over snart, pils er ikke det samme hvis den ikke koster 90kr
 
