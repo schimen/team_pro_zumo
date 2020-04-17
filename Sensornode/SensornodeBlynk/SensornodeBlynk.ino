@@ -35,7 +35,7 @@ WidgetTerminal terminal(TERMINAL_PIN);
 BlynkTimer     timer;
 
 bool     servoTestOn = false;
-bool     blynkShowAll = false;
+bool     blynkShowAll = true;
 uint8_t  blynkMenuSelection = 1;
 uint16_t servoTimer;
 
@@ -80,6 +80,10 @@ void checkAlarm() {
       timer.enable(alarmTimer);
       timer.enable(servoTimer);
       alarmTimerEnabled = timer.isEnabled(alarmTimer);
+      
+      //notify on alarm (Blynk.notify() not working atm):
+      terminal.println("Alarm is on");
+      //Blynk.notify("Alarm on");
     }
     else if (buzzer.isOn())  {
       resetAlarm();
@@ -88,6 +92,10 @@ void checkAlarm() {
   else if (not Sensor::isAlarm()) {
     timer.disable(alarmTimer);
     alarmTimerEnabled = timer.isEnabled(alarmTimer);
+    
+    //notify when alarm is over:
+    terminal.println("Alarm is off");
+    //Blynk.notify("Alarm is off");
   }
 }
 
@@ -272,4 +280,3 @@ void loop() {
   Blynk.run();  //starts blynk
   timer.run();  //starts all enabled timers on timer object
 }
-
