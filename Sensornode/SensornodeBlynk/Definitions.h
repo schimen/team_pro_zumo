@@ -13,9 +13,9 @@
 #define LED_PIN 25
 #define SERVO_PIN 26
 #define BUZZER_PIN 27
-#define SENSOR1_PIN 32
-#define SENSOR2_PIN 33
-#define SENSOR3_PIN 34
+#define SENSOR1_PIN 32  //TMP36
+#define SENSOR2_PIN 33  //LDR
+#define SENSOR3_PIN 34  //POT
 
 //blynk virtual pins
 #define DB_SENSOR1 V1   //DB (dashborad), pins

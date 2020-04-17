@@ -26,11 +26,13 @@ uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
 //objects:
-PWM            servo(SERVO_CHANNEL, SERVO_PIN, 16);      //channel, pin,
-PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);       //freq=50, res=8
-Sensor         sensor1(SENSOR1_PIN, SENSOR1_MAX);  //pin, max allowed value
-Sensor         sensor2(SENSOR2_PIN, SENSOR2_MAX);  //   (before alarm starts)
-Sensor         sensor3(SENSOR3_PIN, SENSOR3_MAX);
+//PWM parameters: channel, pin, res=8, freq=50
+PWM            servo(SERVO_CHANNEL, SERVO_PIN, 16);
+PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);
+//Sensor parameters: pin, max allowed value
+Sensor         sensor1(SENSOR1_PIN, SENSOR1_MAX); //TMP36 sensor
+Sensor         sensor2(SENSOR2_PIN, SENSOR2_MAX); //LDR sensor
+Sensor         sensor3(SENSOR3_PIN, SENSOR3_MAX); //POT sensor
 WidgetTerminal terminal(TERMINAL_PIN);
 BlynkTimer     timer;
 
