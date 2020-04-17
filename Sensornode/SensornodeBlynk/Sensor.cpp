@@ -45,11 +45,11 @@ void Sensor::read() {
   sensorValue = value;
 }
 
-uint16_t Sensor::getValue(bool read) {
+uint16_t Sensor::getValue(bool readOn) {
   /*
   return value
   */
-  if (read) {
+  if (readOn) {
     read();
   }
   
