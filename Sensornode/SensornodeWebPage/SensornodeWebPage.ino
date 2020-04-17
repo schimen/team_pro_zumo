@@ -2,10 +2,8 @@
 #include <SPIFFS.h>
 //#include <WebServer.h>
 
-#include <ESPAsyncWebServer.h>
-
-
-/*//SensorLibaryFrom Schimen
+#include <ESPAsyncWebServer.h>  
+#include "Blonk.h"
 #include "Sensor.h"  //sensor class for control of sensor reading
 #include "SensornodePWM.h"  //pwm class to control buzzer and servo
 #include "Definitions.h" //defintions class for cleaner code
@@ -17,48 +15,32 @@ uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
 Sensor sensor1(33, 1000);
 
-*/
-
-
 const char* ssid = "Marco";
 const char* pass = "7Mgb67HK";
 
-
-/*
-WebServer server (80); //Create WebServer object on port 80
-
-void setup(){
-    Serial.begin(115200);
-
-    if(!SPIFFS.begin(true)){
-        Serial.println("ERROR: Failed to mount SPIFFS");
-        return;
-    }
-
-    WiFi.begin(ssid, pass);
-    Serial.println("Connnecting...");
-    if(WiFi.status() != WL_CONNECTED){
-        delay(1000);
-        Serial.println(".");
-    }
-    Serial.print("Connected: ");
-    Serial.println(ssid);
-    Serial.print("Local IP: ");
-    Serial.println(WiFi.localIP());
-
-    server.on("/", []{server.send(SPIFFS, "text/html", "/index.html");});
-}
-
-void loop(){
-
-}
-*/
 //AsyncVersion 
 
-int randNum;
+//int randNum;
 
-AsyncWebServer server(80);
+//AsyncWebServer server(80);
+
 void setup() {
+  randomSeed(analogRead(34));
+  Blonk.sendFileOnGet("/", "/index.html");
+  Blonk.sendFileOnGet("/blynk_bootlegLONG.svg", "/blynk_bootlegLONG.svg")
+  Blonk.sendFileOnGet("/midjoo.png", "/midjoo.png");
+  Blonk.sendFileOnGet("/blynk_bootleg.svg", "/blynk_bootleg.svg");
+  Blonk.sendTextOnGet("/sens1Val", String(random(0, 100)));
+  Blonk.sendTextOnGet("/sens2Val", String(random(0, 100)));
+  Blonk.sendTextOnGet("/sens3Val", String(random(0, 100)));
+  Blonk.sendTextOnGet("/sens1Avg", String(random(0, 100)));
+  Blonk.sendTextOnGet("/sens2Avg", String(random(0, 100)));
+  Blonk.sendTextOnGet("/sens2Avg", String(random(0, 100)));
+  Blonk.sendTextOnGet("/min", String(random(0, 100)));
+  Blonk.sendTextOnGet("/max", String(random(0, 100)));
+  Blonk.startWebPage(ssid, pass);
+  
+  /*
   Serial.begin(115200);
   
   if(!SPIFFS.begin(true)){ //Upload the data files
@@ -67,7 +49,6 @@ void setup() {
 
   }
 
-  randomSeed(analogRead(34));
 
   WiFi.begin(ssid, pass);
   Serial.println("Connecting...");
@@ -132,7 +113,7 @@ void setup() {
 
 
 
-  server.begin();
+  server.begin();*/
 }
 
  void loop(){
