@@ -46,4 +46,7 @@
   * static
   * class, object, method
   * reference/pointer
+  * Async
+  * Request
+  * Handler
   * kanskje mer, kom med innspill!
