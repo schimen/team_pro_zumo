@@ -196,6 +196,14 @@ void batteryCheck() {
   if (batteryLeft <= 15) lowBattery = true;
 }
 
+void chargeBattery() {
+  charged = ceil((millis() - chargeTime) / 1000); //Runder opp til nærmeste antall sek kjørt
+  Serial.print(charged);
+  for (int i = 6000; i > 10000; i += 1000) {
+    buzzer.playFrequency(i, 150, 12);
+  }
+  buzzer.stopPlaying();
+}
 //-----------------writeToESP----------
 //Skriver alle nye verdier til ESP
 void writeToESP() {
