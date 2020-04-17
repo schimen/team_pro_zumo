@@ -3,11 +3,11 @@
 */
 
 //wifi credentials, IP address, port and blynk authorization
-#define SSID "yourWifiHere"
-#define PASSWORD "yourPasswordHere"
+#define SSID "YourWifiHere"
+#define PASSWORD "YourSSIDHere"
 #define IP 91,192,221,40
 #define PORT 8080
-#define AUTH "yourAuthHere"
+#define AUTH "xg7VAxJBTHMktDhmX8ZwidPa6ZSMjm4w"
 
 //ESP32 gpio pins
 #define LED_PIN 25
@@ -38,7 +38,7 @@
 //timer intervals
 #define SERVO_MOVE_INTERVAL 200L
 #define ALARM_INTERVAL 500L
-#define READINGS_INTERVAL 500L
+#define READINGS_INTERVAL 1000L
 #define MAX_MIN_INTERVAL 30000L
 
 //max allowed sensor values
