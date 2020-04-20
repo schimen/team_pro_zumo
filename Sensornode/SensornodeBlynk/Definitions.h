@@ -1,13 +1,13 @@
 /*
-  Definitions for use in Sensornode.ino
+  Definitions for use in blynk sensornode
 */
 
 //wifi credentials, IP address, port and blynk authorization
-#define SSID "YourWifiHere"
-#define PASSWORD "YourSSIDHere"
+#define SSID "YourWiFIHere"
+#define PASSWORD "YourPasswordHere"
+#define AUTH "xg7VAxJBTHMktDhmX8ZwidPa6ZSMjm4w"
 #define IP 91,192,221,40
 #define PORT 8080
-#define AUTH "xg7VAxJBTHMktDhmX8ZwidPa6ZSMjm4w"
 
 //ESP32 gpio pins
 #define LED_PIN 25
@@ -41,10 +41,15 @@
 #define READINGS_INTERVAL 1000L
 #define MAX_MIN_INTERVAL 30000L
 
-//max allowed sensor values
-#define SENSOR1_MAX 3000
-#define SENSOR2_MAX 3500
-#define SENSOR3_MAX 4000
+// and min allowed sensor values
+#define MIN_OUT 0
+#define MAX_OUT 100
+#define SENSOR1_MIN 700
+#define SENSOR1_MAX 900
+#define SENSOR2_MIN 2000
+#define SENSOR2_MAX 4000
+#define SENSOR3_MIN 0
+#define SENSOR3_MAX 4095
 
 //maximum and minimum possible sensor values:
 #define MAX_READ 4096
