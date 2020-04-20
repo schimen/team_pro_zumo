@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <SPIFFS.h>
-#include <WebServer.h>
+// #include <WebServer.h>
 
 #include <ESPAsyncWebServer.h>  
 //#include "Blonk.h"
@@ -17,8 +17,8 @@ Sensor sensor1(32, 4096);
 Sensor sensor2(33, 4096);
 Sensor sensor3(34, 4096);
 
-const char* ssid = "marco";
-const char* pass = "polo";
+const char* ssid = "Marco";
+const char* pass = "7Mgb67HK";
 
 //AsyncVersion 
 
