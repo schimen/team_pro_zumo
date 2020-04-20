@@ -9,8 +9,8 @@ class Sensor {
   public:
 
     //constructor of Sensor class
-    //                   pin, max allowed for sensor
-    Sensor(uint8_t sensorPin, uint16_t max);
+    //                  pin, minimum value, maximum value
+    Sensor(uint8_t sensorPin, uint16_t min, uint16_t max);
 
     //read sensor.
     //on read, check if over max, check for new average and store read value
@@ -51,6 +51,7 @@ class Sensor {
     uint8_t  readCount; //number of reads of sensor (resets on getAverage())
     uint16_t sensorValue; //current sensor value
     uint16_t maxAllowed;  //maximum value allowed for sensor
+    uint16_t minAllowed;
     uint32_t cumulativeValue; //cumulative sensor value (reset on getAverage())
 };
 
