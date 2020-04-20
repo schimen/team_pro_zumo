@@ -17,7 +17,7 @@ class Sensor {
     void read();
 
     //return sensor value
-    uint16_t getValue(bool read = false);
+    uint16_t getValue(bool readOn = false);
 
     //return average value (cumulativeValue / readCount)
     //bool reset will reset used variables if true
