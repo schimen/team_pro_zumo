@@ -74,6 +74,10 @@ void setup() {
     request->send(SPIFFS, "/blynk_bootleg.svg");
   });
 
+  //Route for Chart.js
+  server.on("/ChartBundle.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/ChartBundle.js");
+  });
 
   //Route for live sensor data
   server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){

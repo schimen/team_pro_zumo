@@ -32,9 +32,8 @@
             box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
         }
         .control-Card{
-            font-family: sans-serif;
-            max-width: 24vw;
-            min-width: 24vw;
+            font-family: 'Oswald', sans-serif;
+            width: 23vw;
             min-height: 10vh;
             background: #bce4fd;
             padding: 1vh;
@@ -44,8 +43,28 @@
             box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
         }
         .plot-Card{
+            max-width: 24vw;
+            min-width: 24vw;
+            min-height: 10vh;
+            background: #d0fdf0;
+            padding: 1vh;
+            padding-top: 0.1vh;
+            padding-left: 3vh;
+            margin: 1vh;
+            box-sizing: border-box;
+            box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
+        }
+        .button{
+            width: 10vw;
+            height: 6vh;
+            background-color: #92b3d8;
+            border: none;
+            cursor: pointer;
             font-family: sans-serif;
-
+            font-size: 1em;
+        }
+        .button:hover{
+            background-color: #8396cc;
         }
         .logo{
             width: 11vw;
@@ -59,7 +78,6 @@
             background: #6a767a;
         }
         h1{
-            font-family: 'Oswald', monospace;
             font-size: 2.5em;
         }
         table{
@@ -120,16 +138,21 @@
                 </tr>
             </table>
         </div>
-        <!--
         <div class="control-Card">
             <h1>Controls</h1>
+            <button class="button" onClick="resetAllCharts()">Reset Charts</button>
         </div>
-        -->
     </div>
     <br>
     <div class="flex-Container">
-        <div class="sensor-Card">
-            <canvas id="realDocChart" width="400" height="400"></canvas>
+        <div class="plot-Card">
+            <canvas id="realChart" width="400" height="400"></canvas>
+        </div>
+        <div class="plot-Card">
+            <canvas id="avgChart" width="400" height="400"></canvas>
+        </div>
+        <div class="plot-Card">
+            <canvas id="minmaxChart" width="400" height="400"></canvas>
         </div>
     </div>
     <br>
@@ -141,49 +164,82 @@
 </html>
 <script src="ChartBundle.js"></script>
 <script>
-/*
-setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
-    sensorRequest("sens1Val");
-    sensorRequest("sens2Val");
-    sensorRequest("sens3Val");
 
-    sensorRequest("sens1Avg");
-    sensorRequest("sens2Avg");
-    sensorRequest("sens3Avg");
+setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
+    index = 0; //I use 1 global please don't hate
+    sensorRequest("sens1Val"); //0
+    sensorRequest("sens2Val"); //1
+    sensorRequest("sens3Val"); //2
+
+    sensorRequest("sens1Avg"); //3
+    sensorRequest("sens2Avg"); //4
+    sensorRequest("sens3Avg"); //5
     
-    sensorRequest("min");
-    sensorRequest("max");
+    sensorRequest("min"); //6
+    sensorRequest("max"); //7
+
+
+    addLabel(realChart, realChartconfig);
+    addLabel(avgChart, avgChartconfig);
+    addLabel(minmaxChart, minmaxChartconfig);
 }, 2000);
-*/
 
 function sensorRequest(ID){
     var xhttp = new XMLHttpRequest(); //Make a new request
     xhttp.onreadystatechange = function(){ //If request is handled do this
         if(this.readyState == 4 && this.status == 200){ //Check if request is OK
             document.getElementById(ID).innerHTML = this.responseText;
+            addData(this.responseText);
+
         }
     };
     xhttp.open("GET", "/" + ID, true); //Open the request, second argument is "name" of the request
     xhttp.send();
 }
-
-function updateChart(){
-    var lenOfLabels = realChartconfig.data.labels.length
-    realChartconfig.data.labels.push((lenOfLabels + 1).toString()) //Have to do this once for every 2 seconds, put this in setInterval
-    return;
-    //realChartconfig.data.datasets.forEach //datasets work as list so [0] will return the first dataset
+function addData(value){
+    if(index < 3){ //Hard coded in...
+        realChartconfig.data.datasets[index].data.push(value);
+        index++;
+    } else if (index > 2 && index < 6){
+        avgChartconfig.data.datasets[(index - 3)].data.push(value);
+        index++;
+    } else if (index > 5 && index < 8){
+        minmaxChartconfig.data.datasets[(index - 6)].data.push(value);
+        index++;
+    }
 }
 
-var realDocChart = document.getElementById('realDocChart').getContext('2d');
-var realChartconfig = {
+function addLabel(chart, chartConfig){
+    if(chartConfig.data.datasets[0].data.length > chartConfig.data.labels.length){
+        chartConfig.data.labels.push(chartConfig.data.labels.length + 1).toString();
+        chart.update();
+    }
+}
+
+function resetAllCharts(){
+    resetChart(realChart, realChartconfig);
+    resetChart(avgChart, avgChartconfig);
+    resetChart(minmaxChart, minmaxChartconfig);
+}
+
+function resetChart(chart, chartConfig){
+    for(i = 0; i < chartConfig.data.datasets.length; i++){
+        chartConfig.data.datasets[i].data = [];
+    }
+    chartConfig.data.labels = [];
+    chart.update();
+}
+
+var realDocChart = document.getElementById('realChart').getContext('2d');
+var realChartconfig = { 
     type: 'line',
     data: {
-        labels: [1,2,3],
+        labels: [],
         datasets: [{
             label: 'Sensor 1',
             backgroundColor: 'rgba(226, 106, 106, 1)',
             borderColor: 'rgba(226, 106, 106, 1)',
-            data: [1,2,3],
+            data: [],
             fill: false,
 
         },
@@ -231,6 +287,114 @@ var realChartconfig = {
     }
 };
 
-var realChart = new Chart(realDocChart, realChartconfig);
+var avgDocChart = document.getElementById('avgChart').getContext('2d');
+var avgChartconfig = {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Sensor 1',
+            backgroundColor: 'rgba(226, 106, 106, 1)',
+            borderColor: 'rgba(226, 106, 106, 1)',
+            data: [],
+            fill: false,
 
+        },
+        {
+            label: 'Sensor 2',
+            backgroundColor: 'rgba(30, 139, 195, 1)',
+            borderColor: 'rgba(30, 139, 195, 1)',
+            data: [],
+            fill: false
+        },
+        {
+            label: 'Sensor 3',
+            backgroundColor: 'rgba(245, 215, 110, 1)',
+            borderColor: 'rgba(245, 215, 110, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here       
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Average Chart'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Average Value'
+                }
+            }
+        }
+    }
+};
+
+var minmaxDocChart = document.getElementById('minmaxChart').getContext('2d');
+var minmaxChartconfig = {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Min',
+            backgroundColor: 'rgba(155, 89, 182, 1)',
+            borderColor: 'rgba(155, 89, 182, 1)',
+            data: [],
+            fill: false,
+
+        },
+        {
+            label: 'Max',
+            backgroundColor: 'rgba(30, 130, 76, 1)',
+            borderColor: 'rgba(30, 130, 76, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here       
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Min/Max value'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Min/Max'
+                }
+            }
+        }
+    }
+};
+
+var realChart = new Chart(realDocChart, realChartconfig);
+var avgChart = new Chart(avgDocChart, avgChartconfig);
+var minmaxChart = new Chart(minmaxDocChart, minmaxChartconfig);
 </script>
