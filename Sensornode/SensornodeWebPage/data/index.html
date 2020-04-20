@@ -170,6 +170,7 @@ setInterval(function(){ //Need an anonymous funtion, because setInterval need fu
     sensorRequest("min"); //6
     sensorRequest("max"); //7
 
+
     addLabel(realChart, realChartconfig);
     addLabel(avgChart, avgChartconfig);
     addLabel(minmaxChart, minmaxChartconfig);
@@ -188,14 +189,14 @@ function sensorRequest(ID){
     xhttp.send();
 }
 function addData(value){
-    if(index < 3){
+    if(index < 3){ //Hard coded in...
         realChartconfig.data.datasets[index].data.push(value);
         index++;
-    } else if (index > 2 || index < 6){
-        avgChartconfig.data.datasets[index - 3].data.push(value);
+    } else if (index > 2 && index < 6){
+        avgChartconfig.data.datasets[(index - 3)].data.push(value);
         index++;
-    } else if (index > 5 || index < 8){
-        minmaxChartconfig.data.datasets[index - 6].data.push(value);
+    } else if (index > 5 && index < 8){
+        minmaxChartconfig.data.datasets[(index - 6)].data.push(value);
         index++;
     }
 }
