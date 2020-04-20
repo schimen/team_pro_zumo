@@ -1,5 +1,5 @@
 /* * * * * * * * * * *     Blonk class     * * * * * * * * * * */
-
+/*
 #ifndef Blonk_h
 #define Blonk_h
 
@@ -17,4 +17,4 @@ void sendFileOnGet(String getRequest, String file);
 //associate text to send on a get request
 void sendTextOnGet(const char* getRequest, String reply);
 
-#endif
+#endif*/

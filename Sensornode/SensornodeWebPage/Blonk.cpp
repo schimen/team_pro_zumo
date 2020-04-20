@@ -1,4 +1,4 @@
-#include "Blonk.h"
+/*#include "Blonk.h"
 #include "Definitions.h"
 
 #define BLONK_PRINT Serial
@@ -9,7 +9,7 @@ auto sendReply = [](AsyncWebServerRequest *request){
 // Lambda body implementation
 };
 
-void startWebPage(char* ssid, char* password, uint32_t baudRate)  {
+void startWebPage(char* ssid, char* password, uint32_t baudRate)  {*/
   /*
   connect to wifi and begin server
   */
@@ -27,8 +27,8 @@ void startWebPage(char* ssid, char* password, uint32_t baudRate)  {
   BLONK_PRINT.println("CONNECTED!");
   BLONK_PRINT.println(WiFi.localIP());
   server.begin();*/
-  Serial.println(" ");
-}
+  /*Serial.println(" ");
+}*/
 
 /*auto testFctn = [](AsyncWebServerRequest *request)  {
                           request->send(SPIFFS, "test");
@@ -41,14 +41,14 @@ void startWebPage(char* ssid, char* password, uint32_t baudRate)  {
   /*sendReply = [](AsyncWebServerRequest *request)  {
                           request->send(SPIFFS, "test");
                       };*/
-  const char* getRequest = "/";
+  /*const char* getRequest = "/";
   server.on(getRequest, HTTP_GET, [](AsyncWebServerRequest *request){
 // Lambda body implementation
 });
   Serial.print(" ");
 }
 
-void sendTextOnGet(const char* getRequest, String text) {
+void sendTextOnGet(const char* getRequest, String text) {*/
   /*
   associate text to send upon a get request from client
   */
@@ -58,5 +58,5 @@ void sendTextOnGet(const char* getRequest, String text) {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
   // Lambda body implementation
   });*/
-  Serial.println(" ");
-}
+  /*Serial.println(" ");
+}*/
