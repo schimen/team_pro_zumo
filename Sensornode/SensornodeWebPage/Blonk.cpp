@@ -5,11 +5,15 @@
 
 AsyncWebServer server(80);  //this is only temporary, i want to make a better solution
 
-void Blonk::startWebPage(char* ssid, char* password, uint32_t baudRate)  {
+auto sendReply = [](AsyncWebServerRequest *request){
+// Lambda body implementation
+};
+
+void startWebPage(char* ssid, char* password, uint32_t baudRate)  {
   /*
   connect to wifi and begin server
   */
-  BLONK_PRINT.begin(baudRate);
+  /*BLONK_PRINT.begin(baudRate);
   if(!SPIFFS.begin(true)){ //Upload the data files
     BLONK_PRINT.println("ERROR: Failed to mount SPIFFS");
     return;
@@ -22,24 +26,37 @@ void Blonk::startWebPage(char* ssid, char* password, uint32_t baudRate)  {
   }
   BLONK_PRINT.println("CONNECTED!");
   BLONK_PRINT.println(WiFi.localIP());
-  server.begin();
+  server.begin();*/
+  Serial.println(" ");
 }
 
-void Blonk::sendFileOnGet(String getRequest, String file) {
+/*auto testFctn = [](AsyncWebServerRequest *request)  {
+                          request->send(SPIFFS, "test");
+                      };*/
+
+//void sendFileOnGet(String getRequest, String file) {
   /*
   associate a file to send upon a get request from client
   */
-  auto sendReply = [](AsyncWebServerRequest *request)  {
-                          request->send(SPIFFS, file);
-                      });
-  server.on(getRequest, HTTP_GET, sendReply);
+  /*sendReply = [](AsyncWebServerRequest *request)  {
+                          request->send(SPIFFS, "test");
+                      };*/
+  const char* getRequest = "/";
+  server.on(getRequest, HTTP_GET, [](AsyncWebServerRequest *request){
+// Lambda body implementation
+});
+  Serial.print(" ");
 }
 
-void Blonk::sendTextOnGet(String getRequest, String text) {
+void sendTextOnGet(const char* getRequest, String text) {
   /*
   associate text to send upon a get request from client
   */
-  auto sendReply = [](AsyncWebServerRequest *request)  {
-                          request->send(200, "text/plain" text);
-  server.on(getRequest, HTTP_GET, sendReply);
+  /*auto sendReply = [](AsyncWebServerRequest *request) {
+                        request->send(200, "text/plain", "testin");
+                      };
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  // Lambda body implementation
+  });*/
+  Serial.println(" ");
 }
