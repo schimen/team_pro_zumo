@@ -166,46 +166,57 @@
 <script>
 
 setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
-    index = 0; //I use 1 global please don't hate
     sensorRequest("sens1Val"); //0
     sensorRequest("sens2Val"); //1
     sensorRequest("sens3Val"); //2
 
+    addLabel(realChart, realChartconfig);
+}, 1000);
+
+setInterval(function(){
     sensorRequest("sens1Avg"); //3
     sensorRequest("sens2Avg"); //4
     sensorRequest("sens3Avg"); //5
-    
+
+    addLabel(avgChart, avgChartconfig);
+}, 10000)
+
+setInterval(function(){
     sensorRequest("min"); //6
     sensorRequest("max"); //7
 
-
-    addLabel(realChart, realChartconfig);
-    addLabel(avgChart, avgChartconfig);
     addLabel(minmaxChart, minmaxChartconfig);
-}, 2000);
+}, 30000)
 
 function sensorRequest(ID){
     var xhttp = new XMLHttpRequest(); //Make a new request
     xhttp.onreadystatechange = function(){ //If request is handled do this
         if(this.readyState == 4 && this.status == 200){ //Check if request is OK
             document.getElementById(ID).innerHTML = this.responseText;
-            addData(this.responseText);
+            addData(this.responseText, ID);
 
         }
     };
     xhttp.open("GET", "/" + ID, true); //Open the request, second argument is "name" of the request
     xhttp.send();
 }
-function addData(value){
-    if(index < 3){ //Hard coded in...
-        realChartconfig.data.datasets[index].data.push(value);
-        index++;
-    } else if (index > 2 && index < 6){
-        avgChartconfig.data.datasets[(index - 3)].data.push(value);
-        index++;
-    } else if (index > 5 && index < 8){
-        minmaxChartconfig.data.datasets[(index - 6)].data.push(value);
-        index++;
+function addData(value, ID){
+    var KeyToIndex = {
+        "sens1Val": 0,
+        "sens2Val": 1,
+        "sens3Val": 2,
+        "sens1Avg": 0,
+        "sens2Avg": 1,
+        "sens3Avg": 2,
+        "min": 0,
+        "max": 1,
+    }
+    if(ID == "sens1Val" || ID == "sens2Val" || ID == "sens3Val"){ //Hard coded in...
+        realChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
+    } else if (ID == "sens1Avg" || ID == "sens2Avg" || ID == "sens3Avg"){
+        avgChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
+    } else if (ID == "min" || ID == "max"){
+        minmaxChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
     }
 }
 
