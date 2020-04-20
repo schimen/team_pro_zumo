@@ -2,31 +2,31 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
+
 char auth[] = "zoEcxQd4vlVVnVFabiLI1Czffukl3K-F"; //Lines ntnu.io atuh
 char ssid[] = "Lines nettverk";
 char pass[] = "asdf1234";
 int inByte;
-const int W = 12;//Sett inn pinneverdier. Samsvar med Blynk-app.
+const int W = 12;
 const int A = 13;
 const int S = 14;
 const int D = 15;
+const int C = 16; //Ladeknapp
 bool moved; //Bool som passer på at ESP bare printer hvert tegn en gang
-bool newMode; //
-bool manualMode;
-bool prevManualMode;
+bool manualMode = false; // kontrollerer å skifte modus
+bool prevManualMode; // Lagrer nåværende modus
 
 BLYNK_WRITE(V0) { //skifter mellom auto og manual mode
   switch (param.asInt()) {
     case 1: //Manual
       manualMode = true;
-      if (manualMode != prevManualMode) {
+      if (manualMode != prevManualMode) { //Printer bare en gang for endring
         Serial.print("M");
         prevManualMode = manualMode;
       }
       break;
 
     case 2: //Auto / Linjefølging
-
       manualMode = false;
       if (manualMode != prevManualMode) {
         Serial.print("L");
@@ -42,7 +42,7 @@ BLYNK_WRITE(V1)//Stepper som sender 1-4 til Zumo for å bestemme farten
   Serial.print(newStepValue);
 }
 
-void manualDriving() {
+void manualDriving() { // leser av retings- og ladeknapp og sender til Zumoen
   if (digitalRead(W) == 1 && moved == false) { //Printer "W" i Serial
     Serial.write("W");
     moved = true;
@@ -59,7 +59,12 @@ void manualDriving() {
     Serial.write("D");
     moved = true;
   }
-  if (digitalRead(W) == 0 && digitalRead(A) == 0 && digitalRead(S) == 0 && digitalRead(D) == 0) { //Denne burde kunne være en "Else", men da printa den gjentatte ganger. Feilsøkte ikke mer. Det finner du ut av hvis du vil
+  if (digitalRead(C) == 1 && moved == false) { //Printer "C" i Serial
+    Serial.write("C");
+    moved = true;
+  }
+
+  if (digitalRead(W) == 0 && digitalRead(A) == 0 && digitalRead(S) == 0 && digitalRead(D) == 0 && digitalRead(C) == 0) {
     if (moved == true) {
       Serial.write("0");
       moved = false;
@@ -104,8 +109,8 @@ void updateBlynkDisplays() {
 
       case '7': //lowBattery
         while (inByte == 7) inByte = Serial.read();
-        if (inByte = 1) Blynk.virtualWrite(V11, HIGH);
-        else Blynk.virtualWrite(V11, LOW);
+        if (inByte == 1) Blynk.virtualWrite(V11, HIGH);
+        if (inByte == 0) Blynk.virtualWrite(V11, LOW);
         break;
     }
   }
@@ -122,9 +127,10 @@ void loop() {
   Blynk.run();
   if (manualMode == true) {
     manualDriving();
-    //updateBynkDisplays();
+    //updateBlynkDisplays();
   }
-  else { //linjefølging
-
+  else { 
+    //linjefølging
+    //updateBynkDisplays();
   }
 }

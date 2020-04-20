@@ -1,3 +1,4 @@
+#include <Wire.h>
 #include <Zumo32U4.h>
 #include <EEPROM.h>
 
@@ -8,8 +9,9 @@ Zumo32U4ButtonC buttonC;
 Zumo32U4LineSensors lineSensors;
 Zumo32U4Motors motors;
 Zumo32U4Encoders encoders;
+L3G gyro;
 
-int maxSpeed = 100; //Justeres i Blynk
+int maxSpeed = 200; //Startfart, justeres i Blynk 100-400
 char inChar; //leser innkommende verider fra ESP
 bool manualMode = true; //kontrollerer auto/manuell kjøring
 
@@ -17,8 +19,8 @@ void setMode() {  //Velger hvilken modus
   switch (inChar) {
     case 'L': //linjefølging
       manualMode = false;
-      lineSensors.initFiveSensors();  //Starter sensorer
-      calibrateSensors(); 
+      lineSensors.initFiveSensors();  //Starter linjelesings-sensorer
+      calibrateSensors();
       break;
 
     case 'M': //manuell kjøring
@@ -50,12 +52,17 @@ void setMaxSpeed() { //Setter maxhastighet for begge kjøremoduser
 void setup() {
   encoders.getCountsAndResetLeft();
   encoders.getCountsAndResetRight();
+  Wire.begin();
+  gyro.init(); //Initaliserer gyro
+  gyro.enableDefault(); //Setter alt i gyroen til default
   Serial1.begin(9600); //Den Serial som ESP er koblet til
   Serial.begin(9600); //Feilsøking
   Serial1.flush();
 }
 
 void loop() {
+  checkIfTurned();
+  patternDriving();
   if (Serial1.available() > 0) {
     inChar = Serial1.read();
     Serial.print(inChar);
@@ -65,7 +72,6 @@ void loop() {
 
     if (manualMode == true) {
       manualDriving();
-      //patternDriving();
     }
 
     if (manualMode == false) {
@@ -77,7 +83,7 @@ void loop() {
         inChar = Serial1.read();
       }
       manualMode = true; //skifter tilbake til manuell
-      motors.setSpeeds(0,0);
+      motors.setSpeeds(0, 0);
     }
   }
 }

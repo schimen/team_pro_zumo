@@ -43,9 +43,10 @@ bool newSpeedSixtyFinal = false;    //Brukes for å si om det finnes en ny verdi
 bool newDistanceSixtyFinal = false; //Brukes for å si om det finnes en ny verdi å skrive til ESP
 bool newMaxSpeed = false;           //Brukes for å si om det finnes en ny verdi å skrive til ESP
 bool newBatteryPercent = false;     //Brukes for å si om det finnes en ny verdi å skrive til ESP
+bool lowBatteryToESP = false;       //Brukes for å si om det finnes en ny verdi å skrive til ESP
+bool toggleLED = false;             //Toggel for lavt batterivarsel-led
 
-float batteryChargeCycles = 0;  //Antall totale ladesykluser for batteriet. Brukes også til å begrense toppverdien for batteriet. Flere sykluser gir lavere batterikapasietet.
-bool squareDriven = false;      //Om ladefunksjonen er kjørt.
+//float batteryChargeCycles = 0;  //Antall totale ladesykluser for batteriet. Brukes også til å begrense toppverdien for batteriet. Flere sykluser gir lavere batterikapasietet.
 int batteryPercent;             //Batterinivå i prosent.
 
 unsigned long currentMillis;
@@ -56,11 +57,12 @@ unsigned long oneCalcTime = 0; //Timestamp for start av en måling av 1 sekund
 //-----------------------Speedometer------------------
 
 void speedometer() {
-  oneCheck();     //Kaller funksjon for å sjekke kontinuerlig hastighet (sjekker hvert sekund)
-  seventyCheck(); //Kaller funksjon for å sjekk om man er over 70% av max
-  sixtyCheck();   //Kaller funksjon for å sjekke om der har gått 60 sekunder og gjøre nødvendig utregninger
-  batteryCheck(); //Kaller funksjon som sjekker batteriforbruk
-  writeToESP();   //Kaller funksjon for å oppdatere blynk
+  oneCheck();     //Oppdaterer hastighet hvert sekund
+  seventyCheck(); //Sjekker om man kjører over 70% eller mer av max, og lagrer tiden
+  sixtyCheck();   //Sjekker om der har gått 60 sekunder og regner ut gj.snitts hastighet og distanse kjørt på den tiden
+  batteryCheck(); //Regner ut batteri brukt, eller oppladet
+  batteryHealth(); //Gir beskjed om service eller bytte av batteri
+  writeToESP();   //Skriver til ESP som deretter oppdaterer blynk
 }
 
 
@@ -69,17 +71,16 @@ void speedometer() {
 void oneCheck() {
   if (oneCalc == false) { //Sjekke om man er i en "sekundtelling" eller ikke. Starter en måling
     oneCalcTime = millis();  //Timestamp
-    encoders.getCountsAndResetLeft(); //Sjekker encoders i starten av en måling
-    encoders.getCountsAndResetRight(); //Sjekker encoders i starten av en måling
+    encoders.getCountsAndResetLeft(); //Resetter encoders i starten av en måling
+    encoders.getCountsAndResetRight(); //Resetter encoders i starten av en måling
     oneCalc = true; //Markerer at man er i en måling
   }
   if (millis() - oneCalcTime >= 1000) { //Når det har gått ett sekund siden sist måling
-    movementTime = millis() - oneCalcTime;
-    //Regner ut nøyaktig tid for bevegelsen.
-    speedLeft = encoders.getCountsLeft(); //Bruker verdi av dekoderdifferensen side sist måling.
-    speedRight = encoders.getCountsRight(); //Bruker verdi av dekoderdifferensen side sist måling.
+    movementTime = millis() - oneCalcTime; //Regner ut tid for målingen av bevegelsen.
+    speedLeft = encoders.getCountsLeft(); //Henter encoderverdiene.
+    speedRight = encoders.getCountsRight(); //Henter encoderverdiene.
 
-    speedCheck(); //Kaller speedCheck()-funksjonen. Se under
+    speedCheck(); //Regner ut farten under sekundet, og oppdaterer evt. ny maks.hastighet
     oneCalc = false; //Ferdig med en hastighetsmåling.
 
     speedSixty += speedo; //Mellomregning for å regne ut gjennomsnittshastighet hvert 60. sekund. Tar med summen av alle fartsberegninger.
@@ -159,15 +160,13 @@ void seventyCheck() {
 
 
 //--------------batteryCheck---------
-const int BATTERY_MAX = 100; //Max batterikapasitet, i meter
 float charged; //Teller hvor mye som lades
-float batteryLeft = BATTERY_MAX; //Gjenstående batteri, i meter
-float batteryChargedTotal; //Totalt opplading av batteriet siden programmets start
 int batteryCapasity = BATTERY_MAX;
 bool lowBattery = false;
-bool newCharge = false;
 bool batteryServiceNeeded = false;
-
+bool prevServiceState = false;
+bool batteryChangeNeeded = false;
+bool prevChangeState = false;
 
 void batteryCheck() {
   if (newSpeedo == true) {
@@ -185,37 +184,41 @@ void batteryCheck() {
     newCharge = false;
     newBatteryPercent = true;
   }
-
   batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
   batteryPercent = batteryLeft / batteryCapasity * 100;
 
-  if (batteryChargeCycles >= 2) { //Hvis batteriet har blitt ladet opp totalt med enn 3 ganger, trenger man service
-    batteryServiceNeeded = true;
-    if (batteryServiceNeeded == true && prevServiceState == false) {
-      Serial.print("batteryServiceNeeded");
-      prevServiceState == batteryServiceNeeded;
-    }
-  }
-  if (batteryChargeCycles >= 3) { //Hvis batteriet har blitt ladet opp totalt med enn 5 ganger, trenger man nytt batteri
-    bool batteryChangeNeeded = true;
-    Serial.print("batteryChangeNeeded");
-  }
-  /*if (batteryLeft <= 40 && lowBattery == false){
-    Serial.print("lowBattery");
-    lowBattery = true;
-    }*/
+  checkIfLowBattery();
 }
 
 void chargeBattery() {
   /*Kjøres når "charge"-knappen i blynk blir holdt inne, og lagrer antall sekunder knappen er holdt inne for å regne ut ladningsprosent*/
   charged = (ceil((millis() - chargeTime) / 1000)) * 10; //Runder opp til nærmeste antall sek kjørt. 1 sek = 10% batteri oppladet
   charged = constrain(charged, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
-  Serial.print(charged);
-  for (int i = 6000; i > 10000; i += 1000) {
-    buzzer.playFrequency(i, 150, 12);
-  }
-  buzzer.stopPlaying();
+  Serial.print("charged: ");
+  Serial.println(charged);
   newCharge = true;
+}
+
+void checkIfLowBattery() {
+  if (batteryPercent <= 95 && lowBattery == false) {
+    lowBattery = true;
+    lowBatteryToESP = true;
+  }
+  if (batteryPercent > 95 && lowBattery == true) {
+    lowBattery = false;
+    lowBatteryToESP = true;
+  }
+}
+
+void batteryHealth() {
+  if (batteryChargeCycles >= 2 && batteryChargeCycles < 3 && batteryServiceNeeded == false) {
+    batteryServiceNeeded = true;
+    Serial.println("SERVICE NEEDED");
+  }
+  if (batteryChargeCycles >= 3 && batteryChangeNeeded == false) {
+    batteryChangeNeeded = true;
+    Serial.println("CHANGE NEEDED");
+  }
 }
 //-----------------writeToESP----------
 //Skriver alle nye verdier til ESP
@@ -281,14 +284,15 @@ void writeToESP() {
 
     newBatteryPercent = false;
   }
-  if (lowBattery == true) {
+  if (lowBatteryToESP == true) {
     Serial1.write(7);
     delay(2);
-    Serial1.write(1);
+    toggleLED = !toggleLED;
+    Serial1.write(toggleLED);
 
-    //Serial.print("BLYNK lowBattery: ");
-    //Serial.println(lowBattery);
+    Serial.print("BLYNK update low battery LED: ");
+    Serial.println(toggleLED);
 
-    lowBattery = false;
+    lowBatteryToESP = false;
   }
 }
