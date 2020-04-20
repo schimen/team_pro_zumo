@@ -13,10 +13,12 @@ uint8_t  Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
 uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
-//Sensor sensor1(33, 1000);
+Sensor sensor1(32, 4096);
+Sensor sensor2(33, 4096);
+Sensor sensor3(34, 4096);
 
-const char* ssid = "Marco";
-const char* pass = "7Mgb67HK";
+const char* ssid = "marco";
+const char* pass = "polo";
 
 //AsyncVersion 
 
@@ -25,7 +27,6 @@ int randNum;
 AsyncWebServer server(80);
 
 void setup() {
-  randomSeed(analogRead(34));
   /*
   Blonk.sendFileOnGet("/", "/index.html");
   Blonk.sendFileOnGet("/blynk_bootlegLONG.svg", "/blynk_bootlegLONG.svg")
@@ -85,42 +86,40 @@ void setup() {
 
   //Route for live sensor data
   server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor1.getValue()));
   });
 
   server.on("/sens2Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor2.getValue()));
   });
   
   server.on("/sens3Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor3.getValue()));
   });
 
   //Route for average data
   server.on("/sens1Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor1.getAverage()));
   });
 
   server.on("/sens2Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor2.getAverage()));
   });
 
   server.on("/sens3Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor3.getAverage()));
   });
 
 
   //Route for min/max
   server.on("/max", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(Sensor::getMax()));
   });
   
   server.on("/min", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(Sensor::getMin()));
   });
-
-
-
+  
   server.begin();
 }
 
