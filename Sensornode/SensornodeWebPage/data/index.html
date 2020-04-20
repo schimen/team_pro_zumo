@@ -168,22 +168,25 @@
     </div>
 </body>
 </html>
-<script src="ChartBundle.js"></script>
+<script src="ChartBundle.js">//Import chart library</script>
 <script>
 
 //Need an anonymous funtion, because setInterval need funtion as argument
 setInterval(function(){
     jsonRequest("currentValues", realChartconfig);
+    limitChart(realChart, realChartconfig, 30);
     addLabel(realChart, realChartconfig);
 }, 1000);
-
+//Average sensor data
 setInterval(function(){
     jsonRequest("averageValues", avgChartconfig);
+    limitChart(avgChart, avgChartconfig, 15);
     addLabel(avgChart, avgChartconfig);
 }, 10000)
-
+//Min Max values
 setInterval(function(){
     jsonRequest("minMax", minmaxChartconfig);
+    limitChart(minmaxChart, minmaxChartconfig, 10);
     addLabel(minmaxChart, minmaxChartconfig);
 }, 30000)
 
@@ -211,20 +214,29 @@ function addData(chartConfig, value, index){
     chartConfig.data.datasets[index].data.push(value);
 }
 
-function addLabel(chart, chartConfig){
+function limitChart(chart, chartConfig, limit = 15){ //Limits amount of data on chart
+    if(chartConfig.data.datasets[0].data.length > limit){
+        chartConfig.data.datasets.forEach((dataset)=>{
+            dataset.data.shift();
+        });
+    }
+    chart.update();
+}
+
+function addLabel(chart, chartConfig){ //Adds label if more data to show
     if(chartConfig.data.datasets[0].data.length > chartConfig.data.labels.length){
         chartConfig.data.labels.push(chartConfig.data.labels.length + 1).toString();
         chart.update();
     }
 }
 
-function resetAllCharts(){
+function resetAllCharts(){//Resets all the chart
     resetChart(realChart, realChartconfig);
     resetChart(avgChart, avgChartconfig);
     resetChart(minmaxChart, minmaxChartconfig);
 }
 
-function resetChart(chart, chartConfig){
+function resetChart(chart, chartConfig){ //Reset a chart
     for(i = 0; i < chartConfig.data.datasets.length; i++){
         chartConfig.data.datasets[i].data = [];
     }
@@ -232,6 +244,8 @@ function resetChart(chart, chartConfig){
     chart.update();
 }
 
+
+//Config files for each chart
 var realDocChart = document.getElementById('realChart').getContext('2d');
 var realChartconfig = {
     type: 'line',
@@ -396,6 +410,8 @@ var minmaxChartconfig = {
     }
 };
 
+
+//Make and draw chart
 var realChart = new Chart(realDocChart, realChartconfig);
 var avgChart = new Chart(avgDocChart, avgChartconfig);
 var minmaxChart = new Chart(minmaxDocChart, minmaxChartconfig);
