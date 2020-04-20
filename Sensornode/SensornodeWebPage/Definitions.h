@@ -33,4 +33,4 @@
 #define LOGO_LONG "/blynk_bootlegLONG.svg"
 #define LOGO "/blynk_bootleg.svg"
 #define MIDJOSKY "/midjoo.png"
-#define CHART_BUNDLE
+#define CHART_BUNDLE "/ChartBundle.js"
