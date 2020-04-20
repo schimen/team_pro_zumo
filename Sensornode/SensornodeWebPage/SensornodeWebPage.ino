@@ -5,7 +5,6 @@
 #include <ESPAsyncWebServer.h>  
 //#include "Blonk.h"
 #include "Sensor.h"  //sensor class for control of sensor reading
-#include "SensornodePWM.h"  //pwm class to control buzzer and servo
 #include "Definitions.h" //defintions class for cleaner code
 
 uint8_t  Sensor::averageCount = 10; //Number of reads per average value.
@@ -13,9 +12,9 @@ uint8_t  Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
 uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
-Sensor sensor1(32, 4096);
+//Sensor sensor1(32, 4096);
 Sensor sensor2(33, 4096);
-Sensor sensor3(34, 4096);
+//Sensor sensor3(34, 4096);
 
 const char* ssid = "Marco";
 const char* pass = "7Mgb67HK";
@@ -26,7 +25,9 @@ int randNum;
 
 AsyncWebServer server(80);
 
+
 void setup() {
+  randomSeed(analogRead(36));
   /*
   Blonk.sendFileOnGet("/", "/index.html");
   Blonk.sendFileOnGet("/blynk_bootlegLONG.svg", "/blynk_bootlegLONG.svg")
@@ -45,7 +46,7 @@ void setup() {
   rip :(
   
   */
-  
+  pinMode(33, INPUT);
   Serial.begin(115200);
   
   if(!SPIFFS.begin(true)){ //Upload the data files
@@ -86,20 +87,20 @@ void setup() {
 
   //Route for live sensor data
   server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor1.getValue(true)));
+    request->send(200, "text/plain", String(sensor2.getValue(true)));
   });
 
   server.on("/sens2Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor2.getValue(true)));
+    request->send(200, "text/plain", String(random(0,100)));
   });
   
   server.on("/sens3Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor3.getValue(true)));
+    request->send(200, "text/plain", String(random(0,100)));
   });
 
   //Route for average data
   server.on("/sens1Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor1.getAverage()));
+    request->send(200, "text/plain", String(random(0,100)));
   });
 
   server.on("/sens2Avg", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -107,7 +108,7 @@ void setup() {
   });
 
   server.on("/sens3Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor3.getAverage()));
+    request->send(200, "text/plain", String(random(0,100)));
   });
 
 
