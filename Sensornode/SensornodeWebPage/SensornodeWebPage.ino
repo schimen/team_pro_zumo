@@ -1,62 +1,35 @@
+/* * * * * * * * * * *     Sensornode Web Page     * * * * * * * * * * *
+  bla bla bla
+*/
+
 #include <WiFi.h>
 #include <SPIFFS.h>
-// #include <WebServer.h>
-
-#include <ESPAsyncWebServer.h>  
-//#include "Blonk.h"
+#include <ESPAsyncWebServer.h>
 #include "Sensor.h"  //sensor class for control of sensor reading
 #include "Definitions.h" //defintions class for cleaner code
 
+//start values of static members of Sensor class:
 uint8_t  Sensor::averageCount = 10; //Number of reads per average value.
 uint8_t  Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
 uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
-//Sensor sensor1(32, 4096);
-Sensor sensor2(33, 4096);
-//Sensor sensor3(34, 4096);
-
-const char* ssid = "Marco";
-const char* pass = "7Mgb67HK";
-
-//AsyncVersion 
-
-int randNum;
-
-AsyncWebServer server(80);
-
+//objects:
+Sensor         sensor1(SENSOR1_Pin, SENSOR1_MIN, SENSOR1_MAX);  //TMP36 sensor
+Sensor         sensor2(SENSOR2_PIN, SENSOR2_MIN, SENSOR2_MAX);  //LDR sensor
+Sensor         sensor3(SENSOR3_PIN, SENSOR3_MIN, SENSOR3_MAX);  //POT sensor
+AsyncWebServer server(PORT);
 
 void setup() {
-  randomSeed(analogRead(36));
-  /*
-  Blonk.sendFileOnGet("/", "/index.html");
-  Blonk.sendFileOnGet("/blynk_bootlegLONG.svg", "/blynk_bootlegLONG.svg")
-  Blonk.sendFileOnGet("/midjoo.png", "/midjoo.png");
-  Blonk.sendFileOnGet("/blynk_bootleg.svg", "/blynk_bootleg.svg");
-  Blonk.sendTextOnGet("/sens1Val", String(random(0, 100)));
-  Blonk.sendTextOnGet("/sens2Val", String(random(0, 100)));
-  Blonk.sendTextOnGet("/sens3Val", String(random(0, 100)));
-  Blonk.sendTextOnGet("/sens1Avg", String(random(0, 100)));
-  Blonk.sendTextOnGet("/sens2Avg", String(random(0, 100)));
-  Blonk.sendTextOnGet("/sens2Avg", String(random(0, 100)));
-  Blonk.sendTextOnGet("/min", String(random(0, 100)));
-  Blonk.sendTextOnGet("/max", String(random(0, 100)));
-  Blonk.startWebPage(ssid, pass);
-  
-  rip :(
-  
-  */
-  pinMode(33, INPUT);
   Serial.begin(115200);
-  
+
   if(!SPIFFS.begin(true)){ //Upload the data files
-    Serial.println("ERROR: Failed to mount SPIFFS");
+    Serial.println("Error, could not mount SPIFFS");
     return;
 
   }
 
-
-  WiFi.begin(ssid, pass);
+  WiFi.begin(SSID, PASSWORD);
   Serial.println("Connecting...");
   while (WiFi.status() != WL_CONNECTED){ //Wait for connection
     delay(1000);
@@ -65,42 +38,43 @@ void setup() {
   Serial.println("CONNECTED!");
   Serial.println(WiFi.localIP());
 
-  //Route for webpage
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  //send index:
+  server.on("/index", HTTP_ANY, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html");
     });
-  //Route for images
-  server.on("/blynk_bootlegLONG.svg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/blynk_bootlegLONG.svg");
+
+  //send images
+  server.on(LOGO_LONG, HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, LOGO_LONG);
   });
-  server.on("/midjoo.png", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/midjoo.png");
+  server.on(MIDJOSKY, HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, MIDJOSKY);
   });
-  server.on("/blynk_bootleg.svg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/blynk_bootleg.svg");
+  server.on(LOGO, HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, LOGO);
   });
 
-  //Route for Chart.js
-  server.on("/ChartBundle.js", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/ChartBundle.js");
+  //send js chart library:
+  server.on(CHART_BUNDLE, HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, CHART_BUNDLE);
   });
 
   //Route for live sensor data
   server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor2.getValue(true)));
+    request->send(200, "text/plain", String(sensor1.getValue(true)));
   });
 
   server.on("/sens2Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor2.getValue(true)));
   });
-  
+
   server.on("/sens3Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor3.getValue(true)));
   });
 
   //Route for average data
   server.on("/sens1Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor1.getAverage()));
   });
 
   server.on("/sens2Avg", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -108,7 +82,7 @@ void setup() {
   });
 
   server.on("/sens3Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(random(0,100)));
+    request->send(200, "text/plain", String(sensor3.getAverage()));
   });
 
 
@@ -116,11 +90,11 @@ void setup() {
   server.on("/max", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(Sensor::getMax()));
   });
-  
+
   server.on("/min", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(Sensor::getMin()));
   });
-  
+
   server.begin();
 }
 
