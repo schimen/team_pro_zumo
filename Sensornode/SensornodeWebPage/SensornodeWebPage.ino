@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <SPIFFS.h>
-//#include <WebServer.h>
+#include <WebServer.h>
 
 #include <ESPAsyncWebServer.h>  
-#include "Blonk.h"
+//#include "Blonk.h"
 #include "Sensor.h"  //sensor class for control of sensor reading
 #include "SensornodePWM.h"  //pwm class to control buzzer and servo
 #include "Definitions.h" //defintions class for cleaner code
@@ -13,19 +13,20 @@ uint8_t  Sensor::sensorsOverMax = 0;  //Number of sensors over max limit.
 uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
-Sensor sensor1(33, 1000);
+//Sensor sensor1(33, 1000);
 
 const char* ssid = "Marco";
 const char* pass = "7Mgb67HK";
 
 //AsyncVersion 
 
-//int randNum;
+int randNum;
 
-//AsyncWebServer server(80);
+AsyncWebServer server(80);
 
 void setup() {
   randomSeed(analogRead(34));
+  /*
   Blonk.sendFileOnGet("/", "/index.html");
   Blonk.sendFileOnGet("/blynk_bootlegLONG.svg", "/blynk_bootlegLONG.svg")
   Blonk.sendFileOnGet("/midjoo.png", "/midjoo.png");
@@ -40,7 +41,10 @@ void setup() {
   Blonk.sendTextOnGet("/max", String(random(0, 100)));
   Blonk.startWebPage(ssid, pass);
   
-  /*
+  rip :(
+  
+  */
+  
   Serial.begin(115200);
   
   if(!SPIFFS.begin(true)){ //Upload the data files
@@ -117,9 +121,9 @@ void setup() {
 
 
 
-  server.begin();*/
+  server.begin();
 }
 
- void loop(){
+void loop(){
 
- }
+}
