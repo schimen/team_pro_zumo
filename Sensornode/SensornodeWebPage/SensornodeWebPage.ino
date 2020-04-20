@@ -15,7 +15,7 @@ uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
 //objects:
-Sensor         sensor1(SENSOR1_Pin, SENSOR1_MIN, SENSOR1_MAX);  //TMP36 sensor
+Sensor         sensor1(SENSOR1_PIN, SENSOR1_MIN, SENSOR1_MAX);  //TMP36 sensor
 Sensor         sensor2(SENSOR2_PIN, SENSOR2_MIN, SENSOR2_MAX);  //LDR sensor
 Sensor         sensor3(SENSOR3_PIN, SENSOR3_MIN, SENSOR3_MAX);  //POT sensor
 AsyncWebServer server(PORT);
@@ -39,7 +39,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   //send index:
-  server.on("/index", HTTP_ANY, [](AsyncWebServerRequest *request){
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html");
     });
 
@@ -60,39 +60,29 @@ void setup() {
   });
 
   //Route for live sensor data
-  server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor1.getValue(true)));
+  server.on("/currentValues", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String json = "{";
+    json += "\"sens1Val\": \"" + String(sensor1.getValue(true)) + "\", ";
+    json += "\"sens2Val\": \"" + String(sensor2.getValue(true)) + "\", ";
+    json += "\"sens3Val\": \"" + String(sensor3.getValue(true)) + "\"";
+    json += "}";
+    request->send(200, "application/json", json);
+  });
+  server.on("/averageValues", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String json = "{";
+    json += "\"sens1Avg\": \"" + String(sensor1.getAverage()) + "\", ";
+    json += "\"sens2Avg\": \"" + String(sensor2.getAverage()) + "\", ";
+    json += "\"sens3Avg\": \"" + String(sensor3.getAverage()) + "\"";
+    json += "}";
+    request->send(200, "application/json", json);
   });
 
-  server.on("/sens2Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor2.getValue(true)));
-  });
-
-  server.on("/sens3Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor3.getValue(true)));
-  });
-
-  //Route for average data
-  server.on("/sens1Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor1.getAverage()));
-  });
-
-  server.on("/sens2Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor2.getAverage()));
-  });
-
-  server.on("/sens3Avg", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor3.getAverage()));
-  });
-
-
-  //Route for min/max
-  server.on("/max", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(Sensor::getMax()));
-  });
-
-  server.on("/min", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(Sensor::getMin()));
+    server.on("/minMax", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String json = "{";
+    json += "\"max\": \"" + String(Sensor::getMax()) + "\", ";
+    json += "\"min\": \"" + String(Sensor::getMin()) + "\"";
+    json += "}";
+    request->send(200, "application/json", json);
   });
 
   server.begin();

@@ -1,3 +1,9 @@
+/*
+  todo:
+    - rydde opp i denne skitne skitne koden
+*/
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="blynk_bootleg.svg">
     <title>Sensor Data</title>
-    
+
     <style>
         .flex-Logo{
             display: flex;
@@ -165,59 +171,44 @@
 <script src="ChartBundle.js"></script>
 <script>
 
-setInterval(function(){ //Need an anonymous funtion, because setInterval need funtion as argument
-    sensorRequest("sens1Val"); //0
-    sensorRequest("sens2Val"); //1
-    sensorRequest("sens3Val"); //2
-
+//Need an anonymous funtion, because setInterval need funtion as argument
+setInterval(function(){
+    jsonRequest("currentValues", realChartconfig);
     addLabel(realChart, realChartconfig);
 }, 1000);
 
 setInterval(function(){
-    sensorRequest("sens1Avg"); //3
-    sensorRequest("sens2Avg"); //4
-    sensorRequest("sens3Avg"); //5
-
+    jsonRequest("averageValues", avgChartconfig);
     addLabel(avgChart, avgChartconfig);
 }, 10000)
 
 setInterval(function(){
-    sensorRequest("min"); //6
-    sensorRequest("max"); //7
-
+    jsonRequest("minMax", minmaxChartconfig);
     addLabel(minmaxChart, minmaxChartconfig);
 }, 30000)
 
-function sensorRequest(ID){
+function jsonRequest(ID, chartConfig){
     var xhttp = new XMLHttpRequest(); //Make a new request
     xhttp.onreadystatechange = function(){ //If request is handled do this
         if(this.readyState == 4 && this.status == 200){ //Check if request is OK
-            document.getElementById(ID).innerHTML = this.responseText;
-            addData(this.responseText, ID);
+            var valueDict = JSON.parse(this.responseText);  //parse json
+            for (var key in valueDict) {  //unpack values and assign them
+              document.getElementById(String(key)).innerHTML = valueDict[key];
 
+              //denne er copy pasta fra stackexchange, fiks det..
+              var index = Object.keys(valueDict).indexOf(key);
+              //pass value and index of key to addData:
+              addData(chartConfig, valueDict[key], index);
+            }
         }
     };
-    xhttp.open("GET", "/" + ID, true); //Open the request, second argument is "name" of the request
+    //Open the request, second argument is "name" of the request
+    xhttp.open("GET", "/" + ID, true);
     xhttp.send();
 }
-function addData(value, ID){
-    var KeyToIndex = {
-        "sens1Val": 0,
-        "sens2Val": 1,
-        "sens3Val": 2,
-        "sens1Avg": 0,
-        "sens2Avg": 1,
-        "sens3Avg": 2,
-        "min": 0,
-        "max": 1,
-    }
-    if(ID == "sens1Val" || ID == "sens2Val" || ID == "sens3Val"){ //Hard coded in...
-        realChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
-    } else if (ID == "sens1Avg" || ID == "sens2Avg" || ID == "sens3Avg"){
-        avgChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
-    } else if (ID == "min" || ID == "max"){
-        minmaxChartconfig.data.datasets[KeyToIndex[ID]].data.push(value);
-    }
+
+function addData(chartConfig, value, index){
+    chartConfig.data.datasets[index].data.push(value);
 }
 
 function addLabel(chart, chartConfig){
@@ -242,7 +233,7 @@ function resetChart(chart, chartConfig){
 }
 
 var realDocChart = document.getElementById('realChart').getContext('2d');
-var realChartconfig = { 
+var realChartconfig = {
     type: 'line',
     data: {
         labels: [],
@@ -267,7 +258,7 @@ var realChartconfig = {
             borderColor: 'rgba(245, 215, 110, 1)',
             data: [],
             fill: false
-        }]//Make new dataset here       
+        }]//Make new dataset here
     },
     options: {
         responsive: true,
@@ -324,7 +315,7 @@ var avgChartconfig = {
             borderColor: 'rgba(245, 215, 110, 1)',
             data: [],
             fill: false
-        }]//Make new dataset here       
+        }]//Make new dataset here
     },
     options: {
         responsive: true,
@@ -374,7 +365,7 @@ var minmaxChartconfig = {
             borderColor: 'rgba(30, 130, 76, 1)',
             data: [],
             fill: false
-        }]//Make new dataset here       
+        }]//Make new dataset here
     },
     options: {
         responsive: true,
