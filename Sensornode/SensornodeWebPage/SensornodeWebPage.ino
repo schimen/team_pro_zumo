@@ -86,15 +86,15 @@ void setup() {
 
   //Route for live sensor data
   server.on("/sens1Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor1.getValue()));
+    request->send(200, "text/plain", String(sensor1.getValue(true)));
   });
 
   server.on("/sens2Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor2.getValue()));
+    request->send(200, "text/plain", String(sensor2.getValue(true)));
   });
   
   server.on("/sens3Val", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", String(sensor3.getValue()));
+    request->send(200, "text/plain", String(sensor3.getValue(true)));
   });
 
   //Route for average data
