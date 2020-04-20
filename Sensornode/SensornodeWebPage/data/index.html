@@ -226,7 +226,7 @@ function resetChart(chart, chartConfig){
     for(i = 0; i < chartConfig.data.datasets.length; i++){
         chartConfig.data.datasets[i].data = [];
     }
-    chartConfig.data.label = [];
+    chartConfig.data.labels = [];
     chart.update();
 }
 
