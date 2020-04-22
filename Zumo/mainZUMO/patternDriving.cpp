@@ -1,10 +1,13 @@
 
 #include "patternDriving.h"
+#include "beautifulMusic.h"
 
 void patternDriving() {
-  btnAIsPressed = buttonA.getSingleDebouncedRelease();
-  btnBIsPressed = buttonB.getSingleDebouncedRelease();;
-  btnCIsPressed = buttonC.getSingleDebouncedRelease();
+  //skal disse verdiene lagres når funksjonenen slettes?
+  //hvis de skal det, bruk static istedet
+  bool btnAIsPressed = buttonA.getSingleDebouncedRelease();
+  bool btnBIsPressed = buttonB.getSingleDebouncedRelease();;
+  bool btnCIsPressed = buttonC.getSingleDebouncedRelease();
 
   if (btnAIsPressed == true) {
     delay(500);

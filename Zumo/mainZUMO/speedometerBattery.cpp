@@ -2,6 +2,16 @@
 #include "speedometerBattery.h"
 
 
+//-----------------writeToESP----------
+void writeToESP(uint8_t index, String message, float value) {
+  Serial1.write(index);
+  delay(2);
+  Serial1.print(value);
+  //debugging:
+  Serial.print(message);
+  Serial.println(value);
+}
+
 //-----------------------oneCheck--------------------
 void oneCheck() {
   if (oneCalc == false) { //Sjekke om man er i en "sekundtelling" eller ikke. Starter en måling
@@ -22,7 +32,7 @@ void oneCheck() {
     numSixty++; //Teller for antall summer i speedSixty. Brukes for å senere regne ut gjennomsnittet av dem.
 
     distanceTotal += (speedo * (movementTime / 1000)); //Nullstilles aldri. Historisk mål for total distanse kjørt, målt i meter
-    newDistanceTotal = true; //Markerer at en ny verdi er tilgjengelig for å printe til Blynk
+    writeToESP(2, "BLYNK distanceTotal: ", float(distanceTotal));
   }
 }
 
@@ -37,9 +47,9 @@ void speedCheck() { //Brukes til å beregne hastigheten til gjennomsnittsforflyt
   }
   if (speedo >  measuredMaxSpeed) { //Historisk mål for høyeste hastighet
     measuredMaxSpeed = speedo;
-    newMaxSpeed = true; //Markerer at ny verdi er klar til å sendes til Blynk
+    writeToESP(5, "BLYNK MAXSPEED: ", measuredMaxSpeed);
   }
-  newSpeedo = true; //Markerer at et ny speedometerverdi er oppdatert, så kan den sendes til ESP
+  writeToESP(1, "BLYNK speedo: ", float(speedo));
 }
 
 //-----------------------sixtyCheck-----------------
@@ -64,9 +74,10 @@ void sixtyCheck() {
     numSixty = 0;
 
     sixtyCalc = false; //Bool for at ny timestamp skal kunne gjennomføres (Starten av denne funksjonen)
-    newSpeedSixtyFinal = true; //Markerer at nye verdier er klare for å sendes til BLYNK
-    newDistanceSixtyFinal = true; //Markerer at nye verdier er klare for å sendes til BLYNK
-    //EEPROM.write(0, batteryChargeCycles); //Lagrer antall batterisykluser i EEPROM en gang i minuttet. Gjør dette sjeldent for å ikke "slite ut" minnet, som her levetid på ca 100,000 skrive/slette-runder
+
+    writeToESP(3, "BLYNK speedSixtyFinal", speedSixtyFinal);
+    writeToESP(4, "BLYNK distanceSixtyFinal", float(distanceSixtyFinal));
+    //EEPROM.write(0, batteryChargeCycles);//Lagrer antall batterisykluser i EEPROM en gang i minuttet. Gjør dette sjeldent for å ikke "slite ut" minnet, som her levetid på ca 100,000 skrive/slette-runder
   }
 }
 
@@ -114,81 +125,6 @@ void batteryHealth() {
   }
 }
 
-//-----------------writeToESP----------
-void writeToESP() {
-  if (newSpeedo == true) {
-    Serial1.write(1);
-    delay(2);
-    Serial1.print(float(speedo));
-
-
-    Serial.print("BLYNK speedo: ");
-    Serial.println(float(speedo));
-
-    newSpeedo = false;
-  }
-  if (newDistanceTotal == true) {
-    Serial1.write(2);
-    delay(2);
-    Serial1.print(float(distanceTotal));
-
-    Serial.print("BLYNK distanceTotal: ");
-    Serial.println(float(distanceTotal));
-
-    newDistanceTotal = false;
-  }
-  if (newSpeedSixtyFinal == true) {
-    Serial1.write(3);
-    delay(2);
-    Serial1.print(float(speedSixtyFinal));
-
-    Serial.print("BLYNK speedSixtyFinal: ");
-    Serial.println(speedSixtyFinal);
-
-    newSpeedSixtyFinal = false;
-  }
-  if (newDistanceSixtyFinal == true) {
-    Serial1.write(4);
-    delay(2);
-    Serial1.print(float(distanceSixtyFinal));
-
-    Serial.print("BLYNK distanceSixtyFinal: ");
-    Serial.println(float(distanceSixtyFinal));
-
-    newDistanceSixtyFinal = false;
-  }
-  if (newMaxSpeed == true) {
-    Serial1.write(5);
-    delay(2);
-    Serial1.write(int(measuredMaxSpeed));
-
-    Serial.print("BLYNK MAXSPEED: ");
-    Serial.println(measuredMaxSpeed);
-
-    newMaxSpeed = false;
-  }
-  if (newBatteryPercent == true) {
-    Serial1.write(6);
-    delay(2);
-    Serial1.write(batteryPercent);
-
-    Serial.print("BLYNK batteryPercent: ");
-    Serial.println(batteryPercent);
-
-    newBatteryPercent = false;
-  }
-  if (lowBatteryToESP == true) {
-    Serial1.write(7);
-    delay(2);
-    toggleLED = !toggleLED;
-    Serial1.write(toggleLED);
-
-    Serial.print("BLYNK update low battery LED: ");
-    Serial.println(toggleLED);
-
-    lowBatteryToESP = false;
-  }
-}
 
 
 //--------------batteryCheck---------
@@ -214,6 +150,8 @@ void batteryCheck() {
   checkIfLowBattery();
 }
 
+
+//speedometer? dette oppdaterer jo mye mer enn bare hastigheten...
 //-----------------------Speedometer------------------
 void speedometer() {
   oneCheck();     //Oppdaterer hastighet hvert sekund

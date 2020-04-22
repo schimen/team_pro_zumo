@@ -5,11 +5,48 @@ void setupGyro()  {
   gyro.enableDefault(); //Setter alt i gyroen til default
 }
 
+
+/*bool isTurned() {
+  if (turned) {
+    return true;
+  }
+  else  {
+    return false;
+  }
+}*/
+
+void updateGyro() { //Sjekker rotasjonsposisjon til Zumoen
+  static unsigned long timeInterval = 0;
+  static int yAxis = 0;
+  gyro.read(); //Leser gyroens verdi
+  if ((millis() - TimeInterval) >= 100) { //Oppdaterer endringa av Y hvert 100ms
+    TimeInterval = millis();
+    yAxis = gyro.g.y; //Lagrer Y-posisjon
+  }
+  if (abs(yAxis) > 3000) { //Hvis bilen roterer rundt tverrgående-akse
+    startTime = millis(); //Starter en teller
+    bool OneSwitch = true; //Sikrer at turnSense kun endrer seg en gang per rotasjon
+    while ( abs(yAxis) > 3000) { //Så læng Zumoen rotere
+      if ((millis() >= startTime + 500) && (OneSwitch == true)) { //Hvis bilen har rotert i mer enn 0.5 sek
+        turnSense = !turnSense; //Toggle turnSense slik at bilen er opp ned eller rett vei annen hver gang
+        Serial.print("turnSense: ");
+        Serial.println(turnSense);
+        OneSwitch = false; // turnSense kan ikke toggles mer så lenge bilen roterer før neste runde igjen
+      }
+      gyro.read();// Sjekke om bilen har sluttet å rotere
+      if ((millis() - TimeInterval) >= 100) { //Oppdaterer endringen av Y hvert 100ms
+        TimeInterval = millis();
+        yAxis = gyro.g.y;
+      }
+    }
+  }
+}
+
+
 void checkIfTurned() {  //turnt
   bool serviceSoundPlayed = false;
   bool changedSoundPlayed = false;
   updateGyro(); // Oppdaterer Y-posisjon
-
   if (turnSense == true) { //Hvis bilen har blitt snudd
     startTime = millis(); //Starter en teller
 
@@ -52,31 +89,6 @@ void checkIfTurned() {  //turnt
       batteryChargedTotal = 0; //resetter batteryChargeCycles-utregningen
       workDone = 0;
       speedometer();
-    }
-  }
-}
-
-void updateGyro() { //Sjekker rotasjonsposisjon til Zumoen
-  gyro.read(); //Leser gyroens verdi
-  if ((millis() - TimeInterval) >= 100) { //Oppdaterer endringa av Y hvert 100ms
-    TimeInterval = millis();
-    Y = gyro.g.y; //Lagrer Y-posisjon
-  }
-  if (abs(Y) > 3000) { //Hvis bilen roterer rundt tverrgående-akse
-    startTime = millis(); //Starter en teller
-    bool OneSwitch = true; //Sikrer at turnSense kun endrer seg en gang per rotasjon
-    while ( abs(Y) > 3000) { //Så læng Zumoen rotere
-      if ((millis() >= startTime + 500) && (OneSwitch == true)) { //Hvis bilen har rotert i mer enn 0.5 sek
-        turnSense = !turnSense; //Toggle turnSense slik at bilen er opp ned eller rett vei annen hver gang
-        Serial.print("turnSense: ");
-        Serial.println(turnSense);
-        OneSwitch = false; // turnSense kan ikke toggles mer så lenge bilen roterer før neste runde igjen
-      }
-      gyro.read();// Sjekke om bilen har sluttet å rotere
-      if ((millis() - TimeInterval) >= 100) { //Oppdaterer endringen av Y hvert 100ms
-        TimeInterval = millis();
-        Y = gyro.g.y;
-      }
     }
   }
 }

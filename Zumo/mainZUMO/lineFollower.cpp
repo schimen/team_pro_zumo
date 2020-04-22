@@ -15,6 +15,10 @@ void calibrateSensors() {
 }
 
 void followLine() {
+  //brukes bare i denne funksjonen:
+  static unsigned int lineSensorValues[NUM_SENSORS];
+  static int lastError = 0;
+
   int position = lineSensors.readLine(lineSensorValues);
 
   int error = position - 2000; // regner ut feilmargin fra sentrum

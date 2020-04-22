@@ -1,40 +1,40 @@
 #include "manualDriving.h"
 
 
-void manualDriving(char input) {
-  switch (input) {
+void manualDriving() {
+  switch (inChar) {
     case 'W':
-      while (input == 'W') {
+      while (inChar == 'W') {
         motors.setSpeeds(maxSpeed, maxSpeed);
         speedometer();
-        input = Serial1.read();
+        inChar = Serial1.read();
       }
       speedometer();
       delay(20);
       break;
     case 'A':
-      while (input == 'A') {
+      while (inChar == 'A') {
         motors.setSpeeds(-150, 150);
         speedometer();
-        input = Serial1.read();
+        inChar = Serial1.read();
       }
       speedometer();
       delay(20);
       break;
     case 'S':
-      while (input == 'S') {
+      while (inChar == 'S') {
         motors.setSpeeds(-maxSpeed, -maxSpeed);
         speedometer();
-        input = Serial1.read();
+        inChar = Serial1.read();
       }
       speedometer();
       delay(20);
       break;
     case 'D':
-      while (input == 'D') {
+      while (inChar == 'D') {
         motors.setSpeeds(150, -150);
         speedometer();
-        input = Serial1.read();
+        inChar = Serial1.read();
       }
       speedometer();
       delay(50);
@@ -42,9 +42,9 @@ void manualDriving(char input) {
 
     case 'C':
       chargeTime = millis();
-      while (input != '0') {
+      while (inChar != '0') {
         motors.setSpeeds(200, -200);
-        input = Serial1.read();
+        inChar = Serial1.read();
       }
       chargeBattery();
       motors.setSpeeds(0, 0);
