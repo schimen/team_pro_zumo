@@ -7,14 +7,6 @@ men blynk skal være good
 *Bruk*
 * skriv dette seinere
 
-*Progress*
-* så og si ferdig med den vanlige modulen bare småting:
-  * siste finish på servodelen
-  * alarmelement i blynk?
-  * putte inn noen faktiske sensorer istedenfor sensor1, sensor2 og sensor3
-
-* mye arbeid igjen på webside delen (regner jeg med)
-
 *TODO*
 * II. *sensoravlesninger*
   * a) done
