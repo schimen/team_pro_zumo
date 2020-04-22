@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="blynk_bootleg.svg">
+    <title>Sensor Data</title>
+
+    <style>
+        .flex-Logo{
+            display: flex;
+            justify-content: flex-end;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+        }
+        .flex-Container{
+            display: flex;
+        }
+        .sensor-Card{
+            font-family: 'Oswald', sans-serif;
+            max-width: 24vw;
+            min-width: 24vw;
+            min-height: 10vh;
+            background: #d0fdf0;
+            padding: 1vh;
+            padding-top: 0.1vh;
+            padding-left: 3vh;
+            margin: 1vh;
+            box-sizing: border-box;
+            box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
+        }
+        .control-Card{
+            font-family: 'Oswald', sans-serif;
+            width: 23vw;
+            min-height: 10vh;
+            background: #bce4fd;
+            padding: 1vh;
+            padding-left: 3vh;
+            margin: 1vh;
+            box-sizing: border-box;
+            box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
+        }
+        .plot-Card{
+            max-width: 24vw;
+            min-width: 24vw;
+            min-height: 10vh;
+            background: #d0fdf0;
+            padding: 1vh;
+            padding-top: 0.1vh;
+            padding-left: 3vh;
+            margin: 1vh;
+            box-sizing: border-box;
+            box-shadow: .5vh .5vh rgba(0, 0, 0, 0.295);
+        }
+        .button{
+            width: 10vw;
+            height: 6vh;
+            background-color: #92b3d8;
+            border: none;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 1em;
+        }
+        .button:hover{
+            background-color: #8396cc;
+        }
+        .logo{
+            width: 11vw;
+            height: auto;
+        }
+        .midjo{
+            width: 11vw;
+            height: auto;
+        }
+        body{
+            background: #6a767a;
+        }
+        h1{
+            font-size: 2.5em;
+        }
+        table{
+            font-family: sans-serif;
+            width: 100%;
+        }
+        td{
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <div class ="flex-Container">
+        <div class="sensor-Card">
+            <h1>Values</h1>
+            <table>
+                <tr>
+                    <td>Sensor 1: </td>
+                    <td id="sens1Val">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 2:  </td>
+                    <td id="sens2Val">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 3: </td>
+                    <td id="sens3Val">0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="sensor-Card">
+            <h1>Average</h1>
+            <table>
+                <tr>
+                    <td>Sensor 1: </td>
+                    <td id="sens1Avg">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 2:  </td>
+                    <td id="sens2Avg">0</td>
+                </tr>
+                <tr>
+                    <td>Sensor 3: </td>
+                    <td id="sens3Avg">0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="sensor-Card">
+            <h1>Max/Min</h1>
+            <table>
+                <tr>
+                    <td>Maxiumum: </td>
+                    <td id="max">0</td>
+                </tr>
+                <tr>
+                    <td>Miniumum:  </td>
+                    <td id="min">0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="control-Card">
+            <h1>Controls</h1>
+            <button class="button" onClick="resetAllCharts()">Reset Charts</button>
+            <button class="button" onClick="resetChart(realChart, realChartconfig)">Reset values</button>
+            <button class="button" onClick="resetChart(avgChart, avgChartconfig)">Reset average</button>
+            <button class="button" onClick="resetChart(minmaxChart, minmaxChartconfig)">Reset min/max</button>
+        </div>
+    </div>
+    <br>
+    <div class="flex-Container">
+        <div class="plot-Card">
+            <canvas id="realChart" width="400" height="400"></canvas>
+        </div>
+        <div class="plot-Card">
+            <canvas id="avgChart" width="400" height="400"></canvas>
+        </div>
+        <div class="plot-Card">
+            <canvas id="minmaxChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <br>
+    <div class="flex-Logo">
+        <img class="logo" src="blynk_bootlegLONG.svg" alt="blonk logo">
+        <img class="midjo" src="midjoo.png" alt="MidjoSkyen">
+    </div>
+</body>
+</html>
+<script src="ChartBundle.js">//Import chart library</script>
+<script>
+
+/*
+  todo:
+    - rydde opp i denne skitne skitne koden
+    - reset for hver chart
+*/
+
+//Need an anonymous funtion, because setInterval need funtion as argument
+setInterval(function(){
+    jsonRequest("currentValues", realChartconfig);
+    limitChart(realChart, realChartconfig, 30);
+    addLabel(realChart, realChartconfig);
+}, 1000);
+//Average sensor data
+setInterval(function(){
+    jsonRequest("averageValues", avgChartconfig);
+    limitChart(avgChart, avgChartconfig, 15);
+    addLabel(avgChart, avgChartconfig);
+}, 10000)
+//Min Max values
+setInterval(function(){
+    jsonRequest("minMax", minmaxChartconfig);
+    limitChart(minmaxChart, minmaxChartconfig, 10);
+    addLabel(minmaxChart, minmaxChartconfig);
+}, 30000)
+
+function jsonRequest(ID, chartConfig){
+    var xhttp = new XMLHttpRequest(); //Make a new request
+    xhttp.onreadystatechange = function(){ //If request is handled do this
+        if(this.readyState == 4 && this.status == 200){ //Check if request is OK
+            var valueDict = JSON.parse(this.responseText);  //parse json
+            for (var key in valueDict) {  //unpack values and assign them
+              document.getElementById(String(key)).innerHTML = valueDict[key];
+
+              //denne er copy pasta fra stackexchange, fiks det..
+              var index = Object.keys(valueDict).indexOf(key);
+              //pass value and index of key to addData:
+              addData(chartConfig, valueDict[key], index);
+            }
+        }
+    };
+    //Open the request, second argument is "name" of the request
+    xhttp.open("GET", "/" + ID, true);
+    xhttp.send();
+}
+
+function addData(chartConfig, value, index){
+    chartConfig.data.datasets[index].data.push(value);
+}
+
+function limitChart(chart, chartConfig, limit = 15){ //Limits amount of data on chart
+    if(chartConfig.data.datasets[0].data.length > limit){
+        chartConfig.data.datasets.forEach((dataset)=>{
+            dataset.data.shift();
+        });
+    }
+    chart.update();
+}
+
+function addLabel(chart, chartConfig){ //Adds label if more data to show
+    if(chartConfig.data.datasets[0].data.length > chartConfig.data.labels.length){
+        chartConfig.data.labels.push(chartConfig.data.labels.length + 1).toString();
+        chart.update();
+    }
+}
+
+function resetAllCharts(){//Resets all the chart
+    resetChart(realChart, realChartconfig);
+    resetChart(avgChart, avgChartconfig);
+    resetChart(minmaxChart, minmaxChartconfig);
+}
+
+function resetChart(chart, chartConfig){ //Reset a chart
+    for(i = 0; i < chartConfig.data.datasets.length; i++){
+        chartConfig.data.datasets[i].data = [];
+    }
+    chartConfig.data.labels = [];
+    chart.update();
+}
+
+
+//Config files for each chart
+var realDocChart = document.getElementById('realChart').getContext('2d');
+var realChartconfig = {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Sensor 1',
+            backgroundColor: 'rgba(226, 106, 106, 1)',
+            borderColor: 'rgba(226, 106, 106, 1)',
+            data: [],
+            fill: false,
+
+        },
+        {
+            label: 'Sensor 2',
+            backgroundColor: 'rgba(30, 139, 195, 1)',
+            borderColor: 'rgba(30, 139, 195, 1)',
+            data: [],
+            fill: false
+        },
+        {
+            label: 'Sensor 3',
+            backgroundColor: 'rgba(245, 215, 110, 1)',
+            borderColor: 'rgba(245, 215, 110, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Sensor Chart'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Sensor Value'
+                }
+            }
+        }
+    }
+};
+
+var avgDocChart = document.getElementById('avgChart').getContext('2d');
+var avgChartconfig = {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Sensor 1',
+            backgroundColor: 'rgba(226, 106, 106, 1)',
+            borderColor: 'rgba(226, 106, 106, 1)',
+            data: [],
+            fill: false,
+
+        },
+        {
+            label: 'Sensor 2',
+            backgroundColor: 'rgba(30, 139, 195, 1)',
+            borderColor: 'rgba(30, 139, 195, 1)',
+            data: [],
+            fill: false
+        },
+        {
+            label: 'Sensor 3',
+            backgroundColor: 'rgba(245, 215, 110, 1)',
+            borderColor: 'rgba(245, 215, 110, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Average Chart'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Average Value'
+                }
+            }
+        }
+    }
+};
+
+var minmaxDocChart = document.getElementById('minmaxChart').getContext('2d');
+var minmaxChartconfig = {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Min',
+            backgroundColor: 'rgba(155, 89, 182, 1)',
+            borderColor: 'rgba(155, 89, 182, 1)',
+            data: [],
+            fill: false,
+
+        },
+        {
+            label: 'Max',
+            backgroundColor: 'rgba(30, 130, 76, 1)',
+            borderColor: 'rgba(30, 130, 76, 1)',
+            data: [],
+            fill: false
+        }]//Make new dataset here
+    },
+    options: {
+        responsive: true,
+        title:{
+            display: true,
+            text: 'Min/Max value'
+        },
+        tooltips:{
+            mode: 'nearest',
+            intersect: false
+        },
+        scales: {
+            x: {
+                display: true,
+                scaleLabel: {
+                    display:true,
+                    labelString: 'Time(s)'
+                }
+            },
+            y: {
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Min/Max'
+                }
+            }
+        }
+    }
+};
+
+
+//Make and draw chart
+var realChart = new Chart(realDocChart, realChartconfig);
+var avgChart = new Chart(avgDocChart, avgChartconfig);
+var minmaxChart = new Chart(minmaxDocChart, minmaxChartconfig);
+</script>

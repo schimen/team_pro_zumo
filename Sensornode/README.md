@@ -1,7 +1,8 @@
 # Modul: Sensornode
 
 *Beskrivelse*
-* skriv dette seinere
+* Dette er sensornode blynk og nettside. Nettsiden er enda under development
+men blynk skal være good
 
 *Bruk*
 * skriv dette seinere
@@ -27,16 +28,16 @@
 * V. *max/min og alarm*
   * a) done
   * b) done
-  * c) kanskje vi klarer å få lagt inn et alarmelement i blynk?
+  * c) få inn alarm i blynk
   * d) done
 * VI. *test av servoen*
   * a) done
 * VII. *vise sensordata på en nettside (vanskelig)*
-  * a) Ferdig med live data holder på line charts
+  * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
 
 * annet
   * skriv ordentlig introduksjon til programmet. begynn på rapporten.
-  * **ro ned valorant** (Valorant betyr bare eg har kalkulator åpent. Discord finner det ikkje ennå, så for flexe har eg d på kalkis
+  * **ro ned valorant**
   * prøv å fiks den derre døgnrytmen alle snakker om
   * håper viruset går over snart, pils er ikke det samme hvis den ikke koster 90kr
 
@@ -46,9 +47,5 @@
   * static
   * class, object, method
   * reference/pointer
-  * Async
-  * Request
-  * Handler
-  * Charts.js
+  * lambda expression
   * kanskje mer, kom med innspill!
-  

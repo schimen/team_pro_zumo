@@ -1,13 +1,14 @@
 #include "Sensor.h"
 #include "Definitions.h"
 
-Sensor::Sensor(uint8_t sensorPin, uint16_t max) {
+Sensor::Sensor(uint8_t sensorPin, uint16_t min, uint16_t max) {
   /*
-  constructor. saves pin, and maxAllowed
+  constructor. saves pin, minAllowed and maxAllowed.
   sets start value for readCount, cumulativeValue and newAverage
   */
   pin = sensorPin;
   maxAllowed = max;
+  minAllowed = min;
   readCount = 0;
   cumulativeValue = 0;
   newAverage = false;
@@ -21,34 +22,38 @@ void Sensor::read() {
     check if sensors are over max allowed, check if sensors over max,
     store read value as sensorValue
   */
-  uint16_t value = analogRead(pin);
+  uint16_t value = map(analogRead(pin), minAllowed, maxAllowed, MIN_OUT, MAX_OUT);
 
   readCount++;
   cumulativeValue = cumulativeValue + sensorValue;
   if (readCount >= averageCount)  {
     newAverage = true;
   }
-  if (sensorValue > maxAllowed and not overMax) { //Actually a Python Programmer lul
+  if (sensorValue >= MAX_OUT and not overMax) {
     sensorsOverMax++;
     overMax = true;
   }
-  else if (sensorValue < maxAllowed and overMax) {
+  else if (sensorValue < MAX_OUT and overMax) {
     sensorsOverMax--;
     overMax = false;
   }
   if (sensorValue > maxValue) {
     maxValue = value;
   }
-  else if (sensorValue < minValue)  {
+  if (sensorValue < minValue)  {
     minValue = value;
   }
   sensorValue = value;
 }
 
-uint16_t Sensor::getValue() {
+uint16_t Sensor::getValue(bool readOn) {
   /*
   return value
   */
+  if (readOn) {
+    read();
+  }
+  
   return sensorValue;
 }
 

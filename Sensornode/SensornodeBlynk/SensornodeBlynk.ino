@@ -1,4 +1,4 @@
-/* * * * * * * * * * *     Sensornode     * * * * * * * * * * *
+/* * * * * * * * * * *     Sensornode Blynk     * * * * * * * * * * *
 
   Dette er sensornode-modul for datateknikk prosjekt.
   Denne versjonen bruker blynk.
@@ -26,16 +26,18 @@ uint16_t Sensor::maxValue = MIN_READ;   // Maximum and minimum
 uint16_t Sensor::minValue = MAX_READ;   // measured value.
 
 //objects:
-PWM            servo(SERVO_CHANNEL, SERVO_PIN, 16);      //channel, pin,
-PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);       //freq=50, res=8
-Sensor         sensor1(SENSOR1_PIN, SENSOR1_MAX);  //pin, max allowed value
-Sensor         sensor2(SENSOR2_PIN, SENSOR2_MAX);  //   (before alarm starts)
-Sensor         sensor3(SENSOR3_PIN, SENSOR3_MAX);
+//PWM parameters: channel, pin, res=8, freq=50
+PWM            servo(SERVO_CHANNEL, SERVO_PIN, 16);
+PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);
+//Sensor parameters: pin, min value, max value
+Sensor         sensor1(SENSOR1_PIN, SENSOR1_MIN, SENSOR1_MAX); //TMP36 sensor
+Sensor         sensor2(SENSOR2_PIN, SENSOR2_MIN, SENSOR2_MAX); //LDR sensor
+Sensor         sensor3(SENSOR3_PIN, SENSOR3_MIN, SENSOR3_MAX); //POT sensor
 WidgetTerminal terminal(TERMINAL_PIN);
 BlynkTimer     timer;
 
 bool     servoTestOn = false;
-bool     blynkShowAll = false;
+bool     blynkShowAll = true;
 uint8_t  blynkMenuSelection = 1;
 uint16_t servoTimer;
 
@@ -80,14 +82,22 @@ void checkAlarm() {
       timer.enable(alarmTimer);
       timer.enable(servoTimer);
       alarmTimerEnabled = timer.isEnabled(alarmTimer);
+
+      //notify on alarm (Blynk.notify() not working atm):
+      terminal.println("Alarm is on");
+      //Blynk.notify("Alarm on");
     }
-    else if (buzzer.isOn())  {
+    else if (buzzer.isOn() or digitalRead(LED_PIN))  {
       resetAlarm();
     }
   }
   else if (not Sensor::isAlarm()) {
     timer.disable(alarmTimer);
     alarmTimerEnabled = timer.isEnabled(alarmTimer);
+
+    //notify when alarm is over:
+    terminal.println("Alarm is off");
+    //Blynk.notify("Alarm is off");
   }
 }
 
