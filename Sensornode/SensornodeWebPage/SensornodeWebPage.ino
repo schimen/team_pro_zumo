@@ -1,5 +1,7 @@
 /* * * * * * * * * * *     Sensornode Web Page     * * * * * * * * * * *
-  bla bla bla
+  todo:
+    - litt mer kommentarer
+    - lag en god beskrivelse på toppen her
 */
 
 #include <WiFi.h>
@@ -30,12 +32,12 @@ void setup() {
   }
 
   WiFi.begin(SSID, PASSWORD);
-  Serial.println("Connecting...");
+  Serial.println("Connecting ");
   while (WiFi.status() != WL_CONNECTED){ //Wait for connection
     delay(1000);
-    Serial.println(".");
+    Serial.print(" .");
   }
-  Serial.println("CONNECTED!");
+  Serial.print("\nConnected to: ");
   Serial.println(WiFi.localIP());
 
   //send index:
