@@ -28,12 +28,12 @@ men blynk skal være good
 * V. *max/min og alarm*
   * a) done
   * b) done
-  * c) få inn alarm i blynk
+  * c) done (funker ikke men er good)
   * d) done
 * VI. *test av servoen*
   * a) done
 * VII. *vise sensordata på en nettside (vanskelig)*
-  * a) veldig spent på å se hva nilo kommer opp med, skal støtte han litt snart
+  * a) done
 
 * annet
   * skriv ordentlig introduksjon til programmet. begynn på rapporten.
