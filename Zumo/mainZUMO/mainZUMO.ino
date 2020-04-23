@@ -11,35 +11,37 @@
 veldig bra jobba, ryddet masse og ting ser bedre ut :D
 
 todo:
+  - sjekk at alt funker
+  - fiks EEPROM
   - rydd de funksjonene her
   - test koden
   - kommenter
+  - få bort magiske tall
 */
 
+//objects
+SimpleTimer  timer;   //- used library from https://github.com/jfturcot/SimpleTimer
+ZumoKontroll zumo;    //- own library, see "ZumoKontroll.h"
 
-
-
-SimpleTimer timer;
-ZumoKontroll zumo;
-
-char inChar;
-
-//maxSpeed = 200; //Startfart, justeres i Blynk 100-400
+//globals:
+char inChar;  //character input from esp32
 bool manualMode = true; //kontrollerer auto/manuell kjøring
 
 void writeToESP(uint8_t index, String message, float value) {
-  Serial1.write(index);
+  Serial1.write(index); //send index to esp32
   delay(2);
-  Serial1.print(value);
+  Serial1.print(value); //send value to esp32
+
   //debugging:
   Serial.print(message);
   Serial.println(value);
 }
 
 void eachSecond() {
-  writeToESP(1, "BLYNK speedo: ", zumo.getSpeed()); //skriver fart til esp
-  writeToESP(2, "BLYNK distanceTotal: ", zumo.getTotalDistance());
-  writeToESP(5, "BLYNK maxspeed: ", zumo.getMaxSpeed());
+  //send values to esp32:
+  writeToESP(1, "BLYNK speedo: ",          zumo.getSpeed());
+  writeToESP(2, "BLYNK distanceTotal: ",   zumo.getTotalDistance());
+  writeToESP(5, "BLYNK maxspeed: ",        zumo.getMaxSpeed());
   writeToESP(6, "BLYNK battery percent: ", zumo.getBatteryPercent());
 
   zumo.checkBatteryHealth();
@@ -58,7 +60,7 @@ void eachSecond() {
 
 void eachMinute() {
   writeToESP(3, "BLYNK average speed: ", zumo.getAverageSpeed());
-  writeToESP(4, "BLYNK new distance: ", zumo.getNewDistance());
+  writeToESP(4, "BLYNK new distance: ",  zumo.getNewDistance());
 }
 
 void setMode() {  //Velger hvilken modus
@@ -104,14 +106,14 @@ void setup() {
   Serial1.begin(9600); //Den Serial som ESP er koblet til
   Serial.begin(9600); //Feilsøking
   Serial1.flush();
-  timer.setInterval(1000L, eachSecond);
-  timer.setInterval(60000L, eachMinute);
+  timer.setInterval(1000L, eachSecond);   //- timer called each second
+  timer.setInterval(60000L, eachMinute);  //- timer called each minute
 }
 
 void loop() {
-  timer.run();
+  timer.run();  //start timers
   zumo.checkIfTurned();
-  patternDriving(&zumo);
+  patternDriving(&zumo);  //from "Driving.h"
   if (Serial1.available() > 0) {
     inChar = Serial1.read();
     Serial.print(inChar);
@@ -120,13 +122,13 @@ void loop() {
     setMaxSpeed();
 
     if (manualMode == true) {
-      manualDriving(&zumo, inChar);
+      manualDriving(&zumo, inChar); //from "Driving.h"
     }
 
     if (manualMode == false) {
       //kjører linje så lenge den ikke får beskjed om å skifte modus
       while (inChar != 'M') {
-        followLine(&zumo);
+        followLine(&zumo);  //from "Driving.h"
         setMaxSpeed();
         inChar = Serial1.read();
       }
