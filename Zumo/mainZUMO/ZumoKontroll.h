@@ -107,8 +107,8 @@ class ZumoKontroll  {
     //private variables:
     uint8_t  batteryPercent;          //- ?
     uint16_t countsSpeed;             //- count for average speed
-    uint32_t previousResetTime;       //- timestamp of last resetEachSecond call
     uint32_t timeOverSeventyPercent;  //- time driven over seventy percent of maximum speed
+    float    previousResetTime;       //- timestamp of last resetEachSecond call
     float    distanceTotal;           //- total distance driven in meter
     float    cumulativeSpeed;         //- cumulative speed for average calculation
     float    measuredMaxSpeed;        //- highest measured speed

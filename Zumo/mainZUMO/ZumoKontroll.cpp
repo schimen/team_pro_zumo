@@ -7,6 +7,8 @@ ZumoKontroll::ZumoKontroll()  {
   timeOverSeventyPercent = 0;
   distanceTotal = 0;
   measuredMaxSpeed = 0;
+  batteryPercent = 100;
+  batteryLeft = 100;
   newCharge = false;
   turnSense = false;
   seventyCalc = false;
@@ -105,7 +107,7 @@ void ZumoKontroll::checkIfTurned() {
         if (not serviceSoundPlayed) {
           Serial.println("SERVICE");
           workDone = SERVICE;
-          buzzer.play("!T87 L8 V7 ce"); //Gir lydvarsel for service utført
+          buzzer.play("!T87 L8 ce"); //Gir lydvarsel for service utført
           serviceSoundPlayed = true;
           while (buzzer.isPlaying());
         }
@@ -114,7 +116,7 @@ void ZumoKontroll::checkIfTurned() {
         if (not changedSoundPlayed) {
           Serial.println("CHANGED");
           workDone = CHANGED;
-          buzzer.play("!T60 L8 V7 ged"); //Gir lydvarsel for bytte av batteri utført
+          buzzer.play("!T60 L8 ged"); //Gir lydvarsel for bytte av batteri utført
           while (buzzer.isPlaying());
           changedSoundPlayed = true;
         }
@@ -260,7 +262,7 @@ float ZumoKontroll::getTotalDistance()  {
 
 float ZumoKontroll::getSpeed() {
   float distance = getDistanceDriven();
-  uint32_t timeDriven = getTimeDriven();
+  float timeDriven = getTimeDriven();
   float speedo = distance / timeDriven; //Hastighet for bevegelsen i m/s
 
   if (speedo < 0) speedo = 0;
