@@ -18,7 +18,7 @@ const char ImperialMarch [] PROGMEM = //<3
   " L4 R<b-8e- L16 d8.d-c<bc"
   " L4 Rf8a-f8.>c16a f8.>c16a1";
 
-//et nydelig stykke til en enorm skuffelse av en serie :)
+//et nydelig stykke til en enorm skuffelse av en serie :(
 const char GoT [] PROGMEM =
   "!T87 L8 gce-16f16 gce-16f16 gce-16f16"
   " gce16f16gce16f16gce16f16gce16f16g4."
