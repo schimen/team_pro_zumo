@@ -92,7 +92,7 @@ void patternDriving(ZumoKontroll *zumo) {
 }
 
 void driveSquare(ZumoKontroll *zumo) {
-  Serial.print("BlueDanube");
+  Serial.print("GoT");
   zumo->buzzer.playFromProgramSpace(GoT);
   float left;
   float right;

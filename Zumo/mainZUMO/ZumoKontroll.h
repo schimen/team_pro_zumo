@@ -54,7 +54,7 @@ class ZumoKontroll  {
     uint8_t batteryPercent;
     uint16_t countsSpeed;
     uint32_t timeOverSeventyPercent;
-    uint32_t previousResetTime;
+    float previousResetTime;
     float batteryLeft;
     float batteryChargeCycles;
     float batteryChargedTotal;

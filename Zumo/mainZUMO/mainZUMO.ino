@@ -41,7 +41,7 @@ void eachSecond() {
   writeToESP(2, "BLYNK distanceTotal: ", zumo.getTotalDistance());
   writeToESP(5, "BLYNK maxspeed: ", zumo.getMaxSpeed());
   writeToESP(6, "BLYNK battery percent: ", zumo.getBatteryPercent());
-
+  writeToESP(7,"Time: ", zumo.getTimeDriven());
   zumo.checkBatteryHealth();
 
   static bool lowBattery = false;
@@ -112,6 +112,7 @@ void loop() {
   timer.run();
   zumo.checkIfTurned();
   patternDriving(&zumo);
+  
   if (Serial1.available() > 0) {
     inChar = Serial1.read();
     Serial.print(inChar);
