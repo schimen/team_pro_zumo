@@ -12,11 +12,6 @@ ZumoKontroll::ZumoKontroll()  {
   seventyCalc = false;
 }
 
-void ZumoKontroll::setupGyro()  {
-  gyro.init();
-  gyro.enableDefault();
-}
-
 void ZumoKontroll::updateGyro() {
   /*
   Sjekker rotasjonsposisjon til Zumoen
@@ -45,6 +40,56 @@ void ZumoKontroll::updateGyro() {
       }
     }
   }
+}
+
+void ZumoKontroll::updateCharge()  {
+  batteryLeft += batteryCharged;
+  batteryChargedTotal += batteryCharged; //Teller hvor mye batteriet totalt har blitt oppladet. "Overlading" tærer også på batteriet, som i virkeligheten (Altså om man forsøker å lade over 100%)
+  batteryChargeCycles = batteryChargedTotal / (BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Sjekker hvor mye batteriet har blitt oppladet totalt siden programmet startet
+  batteryLeft = constrain(batteryLeft, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
+
+  Serial.print("batteryChargeCycles: ");
+  Serial.println(batteryChargeCycles);
+  newCharge = false;
+}
+
+void ZumoKontroll::updateMaxSpeed() {
+  float speedo = getSpeed();
+  if (speedo >  measuredMaxSpeed) {
+    measuredMaxSpeed = speedo;
+  }
+}
+
+void ZumoKontroll::updateTotalDistance()  {
+  float distance = getDistanceDriven();
+  distanceTotal += distance; //Nullstilles aldri. Historisk mål for total distanse kjørt
+}
+
+void ZumoKontroll::updateBatteryPercent() {
+  static float batteryCapasity = BATTERY_MAX;
+  float distance = getDistanceDriven();
+  batteryLeft -= distance; //Minker med likt med antall meter kjørt
+  batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
+  batteryPercent = batteryLeft / batteryCapasity * 100;
+}
+
+void ZumoKontroll::updateTimeOverSeventyPercent() {
+
+  static unsigned long seventyPercentStartTime = millis();
+
+  if (getSpeed() >= SEVENTY_LIMIT && seventyCalc == false) {
+    seventyCalc = true;
+    seventyPercentStartTime = millis();
+  }
+  if (getSpeed() < SEVENTY_LIMIT && seventyCalc == true) {
+    seventyCalc = false;
+    timeOverSeventyPercent += millis() - seventyPercentStartTime;
+  }
+}
+
+void ZumoKontroll::setupGyro()  {
+  gyro.init();
+  gyro.enableDefault();
 }
 
 void ZumoKontroll::checkIfTurned() {
@@ -110,67 +155,14 @@ void ZumoKontroll::calibrateSensors() {
   motors.setSpeeds(0, 0);
 }
 
-void ZumoKontroll::updateTotalDistance()  {
-  float distance = getDistanceDriven();
-  distanceTotal += distance; //Nullstilles aldri. Historisk mål for total distanse kjørt
-}
-
-void ZumoKontroll::updateMaxSpeed() {
-  float speedo = getSpeed();
-  if (speedo >  measuredMaxSpeed) {
-    measuredMaxSpeed = speedo;
-  }
-}
-
-void ZumoKontroll::resetAverageSpeed() {
-  cumulativeSpeed = 0;  //endret fra speedSixty
-  countsSpeed = 0;  //endret fra numSixty
-  timeOverSeventyPercent = 0;
-}
-
-void ZumoKontroll::resetEachSecond() {
-  //Lager nåværende tid, for regne ut nøyaktig tid fra forrige måling:
-  previousResetTime = millis();
-  //Resetter encoders, gjør klar for ny måling:
-  encoders.getCountsAndResetLeft();
-  encoders.getCountsAndResetRight();
-}
-
-void ZumoKontroll::calculateCharge()  {
-  //if (newCharge == true) {
-    batteryLeft += batteryCharged;
-    batteryChargedTotal += batteryCharged; //Teller hvor mye batteriet totalt har blitt oppladet. "Overlading" tærer også på batteriet, som i virkeligheten (Altså om man forsøker å lade over 100%)
-    batteryChargeCycles = batteryChargedTotal / (BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Sjekker hvor mye batteriet har blitt oppladet totalt siden programmet startet
-    batteryLeft = constrain(batteryLeft, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
-
-    Serial.print("batteryChargeCycles: ");
-    Serial.println(batteryChargeCycles);
-    newCharge = false;
-    //}
-  }
-
-void ZumoKontroll::updateTimeOverSeventyPercent() {
-
-  static unsigned long seventyPercentStartTime = millis();
-
-  if (getSpeed() >= SEVENTY_LIMIT && seventyCalc == false) {
-    seventyCalc = true;
-    seventyPercentStartTime = millis();
-  }
-  if (getSpeed() < SEVENTY_LIMIT && seventyCalc == true) {
-    seventyCalc = false;
-    timeOverSeventyPercent += millis() - seventyPercentStartTime;
-  }
-}
-
 void ZumoKontroll::chargeBattery(uint32_t chargeTime) {
   /*
-  Kjøres når "charge"-knappen i blynk blir holdt inne,
-  og lagrer antall sekunder knappen er holdt inne for
-  å regne ut ladningsprosent
+  Run when "charge"-button in Blynk is held in,
+  and saves amount of seconds the button is held
+  in for calculation of charge percentage
   */
 
-  //Runder opp til nærmeste antall sek kjørt. 1 sek = 10% batteri oppladet:
+  //round up to closest number of seconds driven. 1 second = 10% battery charged:
   batteryCharged = (ceil((millis() - chargeTime) / 1000)) * 10;
   batteryCharged = constrain(batteryCharged, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
   Serial.print("charged: ");
@@ -178,15 +170,13 @@ void ZumoKontroll::chargeBattery(uint32_t chargeTime) {
   newCharge = true;
 }
 
-void ZumoKontroll::updateBatteryPercent() {
-  static float batteryCapasity = BATTERY_MAX;
-  float distance = getDistanceDriven();
-  batteryLeft -= distance; //Minker med likt med antall meter kjørt
-  batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
-  batteryPercent = batteryLeft / batteryCapasity * 100;
-}
-
 void ZumoKontroll::checkBatteryHealth() {
+
+  //sjekk med torje og line om dette stemmer:
+  if (isNewCharge())  {
+    updateCharge();
+  }
+
   if (not batteryChangeNeeded)  {
     if (batteryChargeCycles >= 3) {
       batteryChangeNeeded = true;
@@ -199,8 +189,26 @@ void ZumoKontroll::checkBatteryHealth() {
   }
 }
 
+void ZumoKontroll::resetAverageSpeed() {
+  cumulativeSpeed = 0;
+  countsSpeed = 0;
+  timeOverSeventyPercent = 0;
+}
+
+void ZumoKontroll::resetEachSecond() {
+  //Lager nåværende tid, for regne ut nøyaktig tid fra forrige måling:
+  previousResetTime = millis();
+  //Resetter encoders, gjør klar for ny måling:
+  encoders.getCountsAndResetLeft();
+  encoders.getCountsAndResetRight();
+}
+
 bool ZumoKontroll::isNewCharge()  {
   return newCharge;
+}
+
+bool ZumoKontroll::isTurned() {
+  return turnSense;
 }
 
 bool ZumoKontroll::isLowBattery()  {
@@ -212,15 +220,11 @@ bool ZumoKontroll::isLowBattery()  {
   }
 }
 
-bool ZumoKontroll::isTurned() {
-  return turnSense;
-}
-
 float ZumoKontroll::getTimeDriven() {
   /*
   Regner ut tid for målingen av bevegelsen, og konverterer til sekund
   */
-  return millis() - previousResetTime / 1000;
+  return (millis() - previousResetTime) / 1000;
 }
 
 float ZumoKontroll::getAverageSpeed() {
@@ -230,22 +234,16 @@ float ZumoKontroll::getAverageSpeed() {
   //gjennomsnittshatighet over 60 sekunder:
   float averageSpeed = cumulativeSpeed / countsSpeed; //endre navn
   //nullstiller tellere for å gjøre klart for en ny måling:
-  resetEachSecond();
+  resetAverageSpeed();
 
   return averageSpeed;
 }
 
 float ZumoKontroll::getNewDistance() {
   static float lastDistance = 0;
-  //new distance:
   float newDistance = distanceTotal - lastDistance;
   lastDistance = distanceTotal;
   return newDistance;
-}
-
-float ZumoKontroll::getTotalDistance()  {
-  updateTotalDistance();
-  return distanceTotal;
 }
 
 float ZumoKontroll::getDistanceDriven()  {
@@ -255,9 +253,9 @@ float ZumoKontroll::getDistanceDriven()  {
   return combinedSpeed / SPEED_CONVERSION; //Gjør om encoderveriden til meter
 }
 
-float ZumoKontroll::getMaxSpeed() {
-  updateMaxSpeed();
-  return measuredMaxSpeed;
+float ZumoKontroll::getTotalDistance()  {
+  updateTotalDistance();
+  return distanceTotal;
 }
 
 float ZumoKontroll::getSpeed() {
@@ -265,13 +263,18 @@ float ZumoKontroll::getSpeed() {
   uint32_t timeDriven = getTimeDriven();
   float speedo = distance / timeDriven; //Hastighet for bevegelsen i m/s
 
-  if (speedo <= 0) speedo = 0;
+  if (speedo < 0) speedo = 0;
 
   else if (speedo > 0)  {
     cumulativeSpeed += speedo;
     countsSpeed++;
   }
   return speedo;
+}
+
+float ZumoKontroll::getMaxSpeed() {
+  updateMaxSpeed();
+  return measuredMaxSpeed;
 }
 
 float ZumoKontroll::getBatteryPercent() {
