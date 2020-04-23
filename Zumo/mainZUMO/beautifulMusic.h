@@ -1,3 +1,9 @@
+/*
+  todo:
+    - espen du må skrive en veldig fin introduksjon her
+    - legg gjerne inn et stykke til eller to om du føler for det :D
+*/
+
 #include <Arduino.h>
 
 const char BlueDanube [] PROGMEM =  //nydelig
