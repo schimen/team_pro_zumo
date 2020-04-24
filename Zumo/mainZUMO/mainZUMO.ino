@@ -39,15 +39,16 @@ void writeToESP(uint8_t index, String message, float value) {
 
 void eachSecond() {
   //send values to esp32:
-  writeToESP(1, "BLYNK speedo: ",          zumo.getSpeed());
-  writeToESP(2, "BLYNK distanceTotal: ",   zumo.getTotalDistance());
-  writeToESP(5, "BLYNK maxspeed: ",        zumo.getMaxSpeed());
-  writeToESP(6, "BLYNK battery percent: ", zumo.getBatteryPercent());
-  writeToESP(7,"Time: ", zumo.getTimeDriven());
+  writeToESP(currentSpeedToESP, "BLYNK speedo: ",          zumo.getSpeed());
+  writeToESP(distanceTotalToEsP, "BLYNK distanceTotal: ",   zumo.getTotalDistance());
+  writeToESP(measuredMaxSpeedToESP, "BLYNK maxspeed: ",        zumo.getMaxSpeed());
+  writeToESP(newBatteryPercentToESP, "BLYNK battery percent: ", zumo.getBatteryPercent());
+  //writeToESP(chargeCyclesToESP, "BLYNK chargeCycles: ",        TRENGER FUNKJSON HER);
+  //writeToESP(seventyTimeToESP, "BLYNK seventyTime: ", TRENGER FUNKSJON HER);
   zumo.checkBatteryHealth();
 
   static bool lowBattery = false;
-  if (zumo.isLowBattery() and lowBattery)  {
+  if (zumo.isLowBattery() and lowBattery)  { //Fra defenitions: Index til blynk led: #define lowBatteryToESP 7
     //toggle led
   }
   else if (not zumo.isLowBattery() and not lowBattery) {
@@ -59,8 +60,8 @@ void eachSecond() {
 }
 
 void eachMinute() {
-  writeToESP(3, "BLYNK average speed: ", zumo.getAverageSpeed());
-  writeToESP(4, "BLYNK new distance: ",  zumo.getNewDistance());
+  writeToESP(speedSixtyFinalToESP, "BLYNK average speed: ", zumo.getAverageSpeed());
+  writeToESP(distanceSixtyFinalToESP, "BLYNK new distance: ",  zumo.getNewDistance());
 }
 
 void setMode() {  //Velger hvilken modus
