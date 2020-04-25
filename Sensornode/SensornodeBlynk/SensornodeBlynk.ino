@@ -33,6 +33,7 @@ PWM            buzzer(BUZZER_CHANNEL, BUZZER_PIN);
 Sensor         sensor1(SENSOR1_PIN, SENSOR1_MIN, SENSOR1_MAX); //TMP36 sensor
 Sensor         sensor2(SENSOR2_PIN, SENSOR2_MIN, SENSOR2_MAX); //LDR sensor
 Sensor         sensor3(SENSOR3_PIN, SENSOR3_MIN, SENSOR3_MAX); //POT sensor
+//Blynk objects:
 WidgetTerminal terminal(TERMINAL_PIN);
 BlynkTimer     timer;
 
@@ -70,7 +71,7 @@ void resetAlarm() {
 
 void checkAlarm() {
   /*
-  check if two or more sensors are over max allowed sensor value.
+  if Sensor::isAlram() is true, activate alarm
   */
 
   //make timer for alarm on first function call:
