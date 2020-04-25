@@ -15,6 +15,8 @@
 #define measuredMaxSpeedToESP 5
 #define newBatteryPercentToESP 6
 #define lowBatteryToESP 7
+#define chargeCyclesToESP 8
+#define seventyTimeToESP 9
 
 //----Fra gyro.h----
 #define SERVICE 1         //Utført service på batteriet

@@ -39,15 +39,16 @@ void writeToESP(uint8_t index, String message, float value) {
 
 void eachSecond() {
   //send values to esp32:
-  writeToESP(1, "BLYNK speedo: ",          zumo.getSpeed());
-  writeToESP(2, "BLYNK distanceTotal: ",   zumo.getTotalDistance());
-  writeToESP(5, "BLYNK maxspeed: ",        zumo.getMaxSpeed());
-  writeToESP(6, "BLYNK battery percent: ", zumo.getBatteryPercent());
-  writeToESP(7,"Time: ", zumo.getTimeDriven());
+  writeToESP(currentSpeedToESP,      "BLYNK speedo: ",          zumo.getSpeed());
+  writeToESP(distanceTotalToEsP,     "BLYNK distanceTotal: ",   zumo.getTotalDistance());
+  writeToESP(measuredMaxSpeedToESP,  "BLYNK maxspeed: ",        zumo.getMaxSpeed());
+  writeToESP(newBatteryPercentToESP, "BLYNK battery percent: ", zumo.getBatteryPercent());
+  //writeToESP(chargeCyclesToESP,      "BLYNK chargeCycles: ",    TRENGER FUNKJSON HER);
+  //writeToESP(seventyTimeToESP,       "BLYNK seventyTime: ",     TRENGER FUNKSJON HER);
   zumo.checkBatteryHealth();
 
   static bool lowBattery = false;
-  if (zumo.isLowBattery() and lowBattery)  {
+  if (zumo.isLowBattery() and lowBattery)  { //Fra defenitions: Index til blynk led: #define lowBatteryToESP 7
     //toggle led
   }
   else if (not zumo.isLowBattery() and not lowBattery) {
@@ -59,12 +60,12 @@ void eachSecond() {
 }
 
 void eachMinute() {
-  writeToESP(3, "BLYNK average speed: ", zumo.getAverageSpeed());
-  writeToESP(4, "BLYNK new distance: ",  zumo.getNewDistance());
+  writeToESP(speedSixtyFinalToESP,    "BLYNK average speed: ", zumo.getAverageSpeed());
+  writeToESP(distanceSixtyFinalToESP, "BLYNK new distance: ",  zumo.getNewDistance());
 }
 
-void setMode() {  //Velger hvilken modus
-  switch (inChar) {
+void setMode(char input) {  //Velger hvilken modus
+  switch (input) {
     case 'L': //linjefølging
       manualMode = false;
       zumo.lineSensors.initFiveSensors();  //Starter linjelesings-sensorer
@@ -78,8 +79,12 @@ void setMode() {  //Velger hvilken modus
   }
 }
 
-void setMaxSpeed() { //Setter maxhastighet for begge kjøremoduser
-  switch (inChar) {
+void setMaxSpeed(char input) {
+  /*
+  Setter maxhastighet for begge kjøremoduser
+  alternativer 1 til 4 som korresponderer med 100 til 400
+  */
+  switch (input) {
     case '1':
       zumo.maxSpeed = 100;
       break;
@@ -114,13 +119,13 @@ void loop() {
   timer.run();  //start timers
   zumo.checkIfTurned();
   patternDriving(&zumo);  //from "Driving.h"
-  
+
   if (Serial1.available() > 0) {
     inChar = Serial1.read();
     Serial.print(inChar);
 
-    setMode();
-    setMaxSpeed();
+    setMode(inChar);
+    setMaxSpeed(inChar);
 
     if (manualMode == true) {
       manualDriving(&zumo, inChar); //from "Driving.h"
@@ -130,7 +135,7 @@ void loop() {
       //kjører linje så lenge den ikke får beskjed om å skifte modus
       while (inChar != 'M') {
         followLine(&zumo);  //from "Driving.h"
-        setMaxSpeed();
+        setMaxSpeed(inChar);
         inChar = Serial1.read();
       }
       manualMode = true; //skifter tilbake til manuell

@@ -87,7 +87,7 @@ void updateBlynkDisplays() {
         Blynk.virtualWrite(V6, inByte);
         break;
 
-      case '3': //speedSixtyFinal
+      case '3': //avgSpeed
         while (inByte == 3) inByte = Serial.read();
         Blynk.virtualWrite(V7, inByte);
         break;
@@ -97,7 +97,7 @@ void updateBlynkDisplays() {
         Blynk.virtualWrite(V8, inByte);
         break;
 
-      case '5': //maxSpeed
+      case '5': //measuaredMaxSpeed
         while (inByte == 5) inByte = Serial.read();
         Blynk.virtualWrite(V9, inByte);
         break;
@@ -112,6 +112,16 @@ void updateBlynkDisplays() {
         if (inByte == 1) Blynk.virtualWrite(V11, HIGH);
         if (inByte == 0) Blynk.virtualWrite(V11, LOW);
         break;
+
+      case '8': //chargeCycles
+        while (inByte == 8) inByte = Serial.read();
+        Blynk.virtualWrite(V4, inByte);
+      break;
+
+      case'9': //Time over 70% maxSpeed
+        while (inByte == 9) inByte = Serial.read();
+        Blynk.virtualWrite(V12, inByte);
+      break;
     }
   }
 }
@@ -129,7 +139,7 @@ void loop() {
     manualDriving();
     //updateBlynkDisplays();
   }
-  else { 
+  else {
     //linjefølging
     //updateBynkDisplays();
   }
