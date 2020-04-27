@@ -46,7 +46,7 @@
 #define MAX_OUT 100
 #define SENSOR1_MIN 700
 #define SENSOR1_MAX 900
-#define SENSOR2_MIN 2000
+#define SENSOR2_MIN 500
 #define SENSOR2_MAX 4000
 #define SENSOR3_MIN 0
 #define SENSOR3_MAX 4095
