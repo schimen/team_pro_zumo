@@ -1,8 +1,11 @@
-/*Composed by the one and only Espen van Bothooven*/
+/*
+Composed by the one and only Espen van Bothooven
+This files includes music and sounds used by the car
+*/
 
 #include <Arduino.h>
 
-const char BlueDanube [] PROGMEM =  //nydelig
+const char BlueDanube [] PROGMEM =  //Beautiful
   "!T84 L8 ddf#aa4 O5 aa4f#f#4"
   " O4 ddf#aa4 O5 aa4gg4"
   " O4 c#c#ebb4 O5 bb4gg4"
@@ -18,7 +21,7 @@ const char ImperialMarch [] PROGMEM = //<3
   " L4 R<b-8e- L16 d8.d-c<bc"
   " L4 Rf8a-f8.>c16a f8.>c16a1";
 
-//et nydelig stykke til en enorm skuffelse av en serie :(
+// "A beautiful piece of music, for an enormously disapointing series"
 const char GoT [] PROGMEM =
   "!T87 L8 gce-16f16 gce-16f16 gce-16f16"
   " gce16f16gce16f16gce16f16gce16f16g4."
@@ -36,7 +39,7 @@ const char StarWars [] PROGMEM =
 
 const char Prelude [] PROGMEM =
   "!T130 L16 O5 cgfge-gfgcgfge-gfg"
-  " ca-ga-fa-ga-ca-ga-fa-ga-ca-ga-fa-ga-ca-ga-fa-ga-" 
+  " ca-ga-fa-ga-ca-ga-fa-ga-ca-ga-fa-ga-ca-ga-fa-ga-"
   " ce-de-ge-de-ce-de-ge-de-"
   " c>cb->ca->cb->c c>cb->ca->cb->c"
   " cagag-aga cagag-aga"
@@ -73,7 +76,7 @@ const char CrazyTrain [] PROGMEM =
 const char Dragnet[] PROGMEM =
   "!T80 L8 c.d16e-16r16cR2c.d16e-16r16cg-2";
 
-const char Rosanna [] PROGMEM = 
+const char Rosanna [] PROGMEM =
   "!T166 O3 L8 >e->e-4 b-b-4 ff4"
   " O4 L16 <g#<acdf8g#gfd8fr8"
   " T83 O5 L8 cdde-16e-16r8de-16e-16r8.r8"

@@ -16,27 +16,27 @@ ZumoKontroll::ZumoKontroll()  {
 
 void ZumoKontroll::updateGyro() {
   /*
-  Sjekker rotasjonsposisjon til Zumoen
+  Checks the rotation of the Zumo. Is used for the batteryservice and -change.
   */
   static unsigned long timeInterval = 0;
   static int yAxis = 0;
-  gyro.read(); //Leser gyroens verdi
-  if ((millis() - timeInterval) >= 100) { //Oppdaterer endringa av Y hvert 100ms
+  gyro.read(); //Reads the value of the Gyro
+  if ((millis() - timeInterval) >= 100) { //Updates the change of the Y-value every 100ms
     timeInterval = millis();
-    yAxis = gyro.g.y; //Lagrer Y-posisjon
+    yAxis = gyro.g.y; //Saves the value of the Y-position
   }
-  if (abs(yAxis) > 3000) { //Hvis bilen roterer rundt tverrgående-akse
-    unsigned long startTime = millis(); //Starter en teller
-    bool OneSwitch = true; //Sikrer at turnSense kun endrer seg en gang per rotasjon
-    while ( abs(yAxis) > 3000) { //Så læng Zumoen rotere
-      if ((millis() >= startTime + 500) && (OneSwitch == true)) { //Hvis bilen har rotert i mer enn 0.5 sek
-        turnSense = !turnSense; //Toggle turnSense slik at bilen er opp ned eller rett vei annen hver gang
+  if (abs(yAxis) > 3000) { //If the car is flipped
+    unsigned long startTime = millis(); //Starts a counter
+    bool OneSwitch = true; //Makes sure the "turnSense" is changed only once per flip.
+    while ( abs(yAxis) > 3000) { //While the car is upside-down
+      if ((millis() >= startTime + 500) && (OneSwitch == true)) {
+        turnSense = !turnSense; //Toggles "turnSense" whenever the car is flipped
         Serial.print("turnSense: ");
         Serial.println(turnSense);
-        OneSwitch = false; // turnSense kan ikke toggles mer så lenge bilen roterer før neste runde igjen
+        OneSwitch = false; // turnSense can't be toggled while flipping.
       }
-      gyro.read();// Sjekke om bilen har sluttet å rotere
-      if ((millis() - timeInterval) >= 100) { //Oppdaterer endringen av Y hvert 100ms
+      gyro.read();// Checks if the car stopped flipping
+      if ((millis() - timeInterval) >= 100) { //Updates the change of the Y-value every 100ms
         timeInterval = millis();
         yAxis = gyro.g.y;
       }
@@ -45,10 +45,14 @@ void ZumoKontroll::updateGyro() {
 }
 
 void ZumoKontroll::updateCharge()  {
+/*
+This function updates the values regarding the battery after a charge
+it updates whats left of the battery, how much it has been charged in total, and how many chargin cycles there has been.
+*/
   batteryLeft += batteryCharged;
-  batteryChargedTotal += batteryCharged; //Teller hvor mye batteriet totalt har blitt oppladet. "Overlading" tærer også på batteriet, som i virkeligheten (Altså om man forsøker å lade over 100%)
-  batteryChargeCycles = batteryChargedTotal / (BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Sjekker hvor mye batteriet har blitt oppladet totalt siden programmet startet
-  batteryLeft = constrain(batteryLeft, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
+  batteryChargedTotal += batteryCharged; //Counts the total charge.
+  batteryChargeCycles = batteryChargedTotal / (BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Checks how many full charging cycles the battery has had
+  batteryLeft = constrain(batteryLeft, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Constrains the maximum battery capacity based on the number of full cycles
 
   Serial.print("batteryChargeCycles: ");
   Serial.println(batteryChargeCycles);
@@ -56,6 +60,10 @@ void ZumoKontroll::updateCharge()  {
 }
 
 void ZumoKontroll::updateMaxSpeed() {
+  /*
+This function updates the Max Speed.
+If the current speed is higher than the previous max speed, its saved as the new max
+  */
   float speedo = getSpeed();
   if (speedo >  measuredMaxSpeed) {
     measuredMaxSpeed = speedo;
@@ -63,20 +71,30 @@ void ZumoKontroll::updateMaxSpeed() {
 }
 
 void ZumoKontroll::updateTotalDistance()  {
+/*
+This function updates the total distance travelled.
+This value is never reset. It's an historic measure of distance travelled
+*/
   float distance = getDistanceDriven();
-  distanceTotal += distance; //Nullstilles aldri. Historisk mål for total distanse kjørt
+  distanceTotal += distance;
 }
 
 void ZumoKontroll::updateBatteryPercent() {
+/*
+This function updates the battery percentage based on the distance traveller
+*/
   static float batteryCapasity = BATTERY_MAX;
   float distance = getDistanceDriven();
-  batteryLeft -= distance; //Minker med likt med antall meter kjørt
+  batteryLeft -= distance;
   batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
   batteryPercent = batteryLeft / batteryCapasity * 100;
 }
 
 void ZumoKontroll::updateTimeOverSeventyPercent() {
-
+/*
+This function checks if the car is going faster than 70%
+of max speed, and measures the duration for it
+*/
   static unsigned long seventyPercentStartTime = millis();
 
   if (getSpeed() >= SEVENTY_LIMIT && seventyCalc == false) {
@@ -90,61 +108,77 @@ void ZumoKontroll::updateTimeOverSeventyPercent() {
 }
 
 void ZumoKontroll::setupGyro()  {
+/*
+This function simply initializes the gyro sensor
+*/
   gyro.init();
   gyro.enableDefault();
 }
 
 void ZumoKontroll::checkIfTurned() {
+  /*
+This function checks if the car is turned around, and for how long.
+Is used to call the battery service and battery change
+  */
   static int workDone = 0;
   bool serviceSoundPlayed = false;
   bool changedSoundPlayed = false;
-  updateGyro(); // Oppdaterer Y-posisjon
-  if (isTurned()) { //Hvis bilen har blitt snudd
-    unsigned long startTime = millis(); //Starter en teller
+  updateGyro();
+  if (isTurned()) {
+    unsigned long startTime = millis();
 
-    while (isTurned()) { //Så lengde bilen er snudd
-      if (startTime + 3000 <= millis() < startTime + 5000) { //Hvis bilen har vært snudd 2s eller over, men mindre enn 5s
+    while (isTurned()) {
+      if (startTime + 3000 <= millis() < startTime + 5000) { //If the car has been flipped for more than two, but less than five seconds
         if (not serviceSoundPlayed) {
           Serial.println("SERVICE");
           workDone = SERVICE;
-          buzzer.play("!T87 L8 ce"); //Gir lydvarsel for service utført
+          buzzer.play("!T87 L8 ce"); //Plays a sound for completed service
           serviceSoundPlayed = true;
           while (buzzer.isPlaying());
         }
       }
-      if (millis() >= startTime + 5000) { //Hvis bilen har vært snudd 5s eller over
+      if (millis() >= startTime + 5000) { //If the car has been flipped for more than five seconds
         if (not changedSoundPlayed) {
           Serial.println("CHANGED");
           workDone = CHANGED;
-          buzzer.play("!T60 L8 ged"); //Gir lydvarsel for bytte av batteri utført
+          buzzer.play("!T60 L8 ged"); //Plays a different sound for a completed battery change
           while (buzzer.isPlaying());
           changedSoundPlayed = true;
         }
       }
-      updateGyro(); //Oppdatere Y-posisjon fer å sjekke om bilen er snudd igjen
+      updateGyro(); //Updates the gyro to see if the car has been flipped back over
     }
 
     if (workDone == SERVICE) {
+      /*
+      Updates the battery variables according to a service
+      */
       Serial.println("workDone is service");
-      batteryChargeCycles = 1; // Fjerner 1 ladesyklus
+      batteryChargeCycles = 1;
       batteryChargedTotal = 100;
-      batteryLeft = 100; // Resetter batteriprosent til 100
-      newCharge == true; // Oppdaterer batteriutregninger
-      workDone = 0; //  Resetter workDone variablen
+      batteryLeft = 100;
+      newCharge == true;
+      workDone = 0;
 
     }
     if (workDone == CHANGED) {
-      batteryChargeCycles = 0; //Resetter ladesyklusene til 0
+      /*
+      Updates the battery variables according to a change
+      */
+      batteryChargeCycles = 0;
       Serial.println("workDone is changed");
-      batteryLeft = 100; //Resetter batteriprosent til 100
-      batteryChargedTotal = 0; //resetter batteryChargeCycles-utregningen
+      batteryLeft = 100;
+      batteryChargedTotal = 0;
       workDone = 0;
     }
   }
 }
 
 void ZumoKontroll::calibrateSensors() {
-  for (int i = 0; i < 120; i++) { //kjører mot høyre, så venstre, så sentrerer seg igjen
+  /*
+This function calibrates the sensors used for line following
+  */
+  for (int i = 0; i < 120; i++) {
     if (i > 30 && i < 90) {
       motors.setSpeeds(200, -200);
     }
@@ -160,11 +194,10 @@ void ZumoKontroll::calibrateSensors() {
 void ZumoKontroll::chargeBattery(uint32_t chargeTime) {
   /*
   Run when "charge"-button in Blynk is held in,
-  and saves amount of seconds the button is held
+  and saves amount of time the button is held
   in for calculation of charge percentage
+  round up to closest number of seconds driven. 1 second = 10% battery charged
   */
-
-  //round up to closest number of seconds driven. 1 second = 10% battery charged:
   batteryCharged = (ceil((millis() - chargeTime) / 1000)) * 10;
   batteryCharged = constrain(batteryCharged, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10));
   Serial.print("charged: ");
@@ -173,8 +206,10 @@ void ZumoKontroll::chargeBattery(uint32_t chargeTime) {
 }
 
 void ZumoKontroll::checkBatteryHealth() {
-
-  //sjekk med torje og line om dette stemmer:
+/*
+This function checks if a batteryservice or change
+is needed, and gives a notification
+*/
   if (isNewCharge())  {
     updateCharge();
   }
@@ -192,15 +227,22 @@ void ZumoKontroll::checkBatteryHealth() {
 }
 
 void ZumoKontroll::resetAverageSpeed() {
+  /*
+This function resets the variables used for
+calculating and saving the average speed
+  */
   cumulativeSpeed = 0;
   countsSpeed = 0;
   timeOverSeventyPercent = 0;
 }
 
 void ZumoKontroll::resetEachSecond() {
-  //Lager nåværende tid, for regne ut nøyaktig tid fra forrige måling:
+  /*
+This function resets the encoders between each reading
+while also doing a timestamp. Used for the calculations
+made every second.
+  */
   previousResetTime = millis();
-  //Resetter encoders, gjør klar for ny måling:
   encoders.getCountsAndResetLeft();
   encoders.getCountsAndResetRight();
 }
@@ -224,24 +266,26 @@ bool ZumoKontroll::isLowBattery()  {
 
 float ZumoKontroll::getTimeDriven() {
   /*
-  Regner ut tid for målingen av bevegelsen, og konverterer til sekund
+  Measures the duration of movement, converted to seconds
   */
   return (millis() - previousResetTime) / 1000;
 }
 
 float ZumoKontroll::getAverageSpeed() {
   /*
-  putt inn en god beskrivelse
+  This function returns the average speed of the past 60
+  seconds and resets the counters, preparing new calculations
   */
-  //gjennomsnittshatighet over 60 sekunder:
-  float averageSpeed = cumulativeSpeed / countsSpeed; //endre navn
-  //nullstiller tellere for å gjøre klart for en ny måling:
+  float averageSpeed = cumulativeSpeed / countsSpeed;
   resetAverageSpeed();
-
   return averageSpeed;
 }
 
 float ZumoKontroll::getNewDistance() {
+  /*
+  This function returns the distance travelled in
+  the last minute
+  */
   static float lastDistance = 0;
   float newDistance = distanceTotal - lastDistance;
   lastDistance = distanceTotal;
@@ -249,6 +293,10 @@ float ZumoKontroll::getNewDistance() {
 }
 
 float ZumoKontroll::getDistanceDriven()  {
+  /*
+  This function returns the distance travelled in
+  the current movement.
+  */
   float speedLeft = encoders.getCountsLeft(); //Henter encoderverdiene.
   float speedRight = encoders.getCountsRight(); //Henter encoderverdiene.
   float combinedSpeed = (speedLeft + speedRight) / 2;
@@ -256,11 +304,17 @@ float ZumoKontroll::getDistanceDriven()  {
 }
 
 float ZumoKontroll::getTotalDistance()  {
+  /*
+This function returns the total distance travelled
+  */
   updateTotalDistance();
   return distanceTotal;
 }
 
 float ZumoKontroll::getSpeed() {
+  /*
+  This function returns the actual speed in the last second
+  */
   float distance = getDistanceDriven();
   float timeDriven = getTimeDriven();
   float speedo = distance / timeDriven; //Hastighet for bevegelsen i m/s
@@ -275,16 +329,26 @@ float ZumoKontroll::getSpeed() {
 }
 
 float ZumoKontroll::getMaxSpeed() {
+  /*
+This function returns the maximum speed driven
+  */
   updateMaxSpeed();
   return measuredMaxSpeed;
 }
 
 float ZumoKontroll::getBatteryPercent() {
+  /*
+  This function returns the current battery percentage
+  */
   updateBatteryPercent();
   return batteryPercent;
 }
 
 uint32_t ZumoKontroll::getTimeOverSeventyPercent() {
+  /*
+  This function returns the duration driven at more
+  than 70% of max speed.
+  */
   updateTimeOverSeventyPercent();
   return timeOverSeventyPercent;
 }

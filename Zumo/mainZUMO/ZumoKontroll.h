@@ -1,10 +1,5 @@
-/* * * * * * * * * * *     ZumoKontroll class     * * * * * * * * * * *
+//* * * * * * * * * * *     ZumoKontroll class     * * * * * * * * * * *
 
-todo:
-  - sjekk at alt funker
-  - fiks kommentarer og magiske tall i .cpp fil
-
-*/
 
 #ifndef ZumoKontroll_h
 #define ZumoKontroll_h
@@ -22,7 +17,7 @@ class ZumoKontroll  {
     //setup for gyro
     void setupGyro();
 
-    //check if zumo has been turned (?upside down?)
+    //check if zumo has been turned upside-down
     void checkIfTurned();
 
     //calibrate zumo sensors

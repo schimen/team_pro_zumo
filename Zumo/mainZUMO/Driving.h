@@ -1,10 +1,5 @@
-/* * * * * * * * * * *     Driving functions     * * * * * * * * * * *
-todo:
-  - luk opp magiske tall og legg dem i definitions fil
-  - sjekk at alt funker
-  - espen og line: gå over kommentarer og se om alt ser bra ut
-  - simen: sjekk om du kan effektivisere noe her
-*/
+//* * * * * * * * * * *     Driving functions     * * * * * * * * * * *
+
 
 #ifndef Driving_h
 #define Driving_h
