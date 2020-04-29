@@ -100,21 +100,21 @@ class ZumoKontroll  {
     void updateTimeOverSeventyPercent();
 
     //private variables:
-    uint8_t  batteryPercent;          //- ?
+    uint8_t  batteryPercent;          //- Remaining battery in measured in percentage
     uint16_t countsSpeed;             //- count for average speed
     uint32_t timeOverSeventyPercent;  //- time driven over seventy percent of maximum speed
     float    previousResetTime;       //- timestamp of last resetEachSecond call
     float    distanceTotal;           //- total distance driven in meter
     float    cumulativeSpeed;         //- cumulative speed for average calculation
     float    measuredMaxSpeed;        //- highest measured speed
-    float    batteryLeft;             //- ?
-    float    batteryChargeCycles;     //- ?
-    float    batteryChargedTotal;     //- ?
-    bool     turnSense;               //- ?
-    bool     seventyCalc;             //- ?
-    bool     newCharge;               //- ?
-    bool     batteryServiceNeeded;    //- ?
-    bool     batteryChangeNeeded;     //- ?
+    float    batteryLeft;             //- Value for storing the current battery amount
+    float    batteryChargeCycles;     //- Number of full battery charge cycles
+    float    batteryChargedTotal;     //- Total amound of battery charged
+    bool     turnSense;               //- Used to flag if the car is flipped over
+    bool     seventyCalc;             //- Used for timing the duration of driving above 70% of max speed
+    bool     newCharge;               //- Used to flag that the battery has been charged
+    bool     batteryServiceNeeded;    //- Used to flag if a battery service is needed
+    bool     batteryChangeNeeded;     //- Used to flag if a battery change is needed
 };
 
 #endif
