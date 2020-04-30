@@ -35,7 +35,7 @@ void eachSecond() {
   writeToESP(distanceTotalToEsP,     "BLYNK distanceTotal: ",   zumo.getTotalDistance());
   writeToESP(measuredMaxSpeedToESP,  "BLYNK maxspeed: ",        zumo.getMaxSpeed());
   writeToESP(newBatteryPercentToESP, "BLYNK battery percent: ", zumo.getBatteryPercent());
-  writeToESP(chargeCyclesToESP,      "BLYNK chargeCycles: ",    zumo.batteryChargeCycles;
+  writeToESP(chargeCyclesToESP,      "BLYNK chargeCycles: ",    zumo.batteryChargeCycles);
   writeToESP(seventyTimeToESP,       "BLYNK seventyTime: ",     zumo.getTimeOverSeventyPercent());
   zumo.checkBatteryHealth();
 
