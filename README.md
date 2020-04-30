@@ -9,6 +9,7 @@ Filoversikt:
   - style guide for team pro.md
   
 - Senornode
+
   - SensornodeBlynk
     - Definitions.h
     - Sensor.h
@@ -16,6 +17,7 @@ Filoversikt:
     - SensornodePWM.h
     - SensornodePWM.cpp
     - SensornodeBlynk.ino
+    
   - SensornodeWebPage
     - Definitions.h
     - Sensor.h
@@ -28,3 +30,18 @@ Filoversikt:
       - midjoo.png
       - index.html
  
+ - Zumo
+  - mainESP
+    - mainESP.ino
+  
+  - mainZumo
+    - beautifulMusic.h
+    - Definitions.h
+    - Driving.h
+    - Driving.cpp
+    - SimpleTimer.h
+    - SimpleTimer.cpp
+    - ZumoKontroll.h
+    - ZumoKontroll.cpp
+    - mainZUMO.ino
+    
