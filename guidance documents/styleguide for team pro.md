@@ -9,9 +9,6 @@ hvordan koden skal skrives med tanke på stil:
 Se eksempelet:
 [style_example.cpp](https://github.com/schimen/team_pro_zumo/blob/master/guidance%20documents/style_example.cpp)
 
-Her er reglene mine:
-(om noen vil endre/legge til noe så bare si ifra :D)
-
 **Generelt**:
 * skriv alt på engelsk.
 * skriv funksjoner for så og si alt.

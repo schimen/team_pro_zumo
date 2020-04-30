@@ -11,22 +11,25 @@ const int W = 12;
 const int A = 13;
 const int S = 14;
 const int D = 15;
-const int C = 16; //Ladeknapp
-bool moved; //Bool som passer på at ESP bare printer hvert tegn en gang
-bool manualMode = false; // kontrollerer å skifte modus
-bool prevManualMode; // Lagrer nåværende modus
+const int C = 16; //Button for charging
+bool moved; //Boolean to make sure the values are printed only once
+bool manualMode = false; // Controls the switching between manual- and auto mode
+bool prevManualMode; // Saved the current status of the same value
 
-BLYNK_WRITE(V0) { //skifter mellom auto og manual mode
+BLYNK_WRITE(V0) {
+  /*
+  Switches between auto and manual mode
+  */
   switch (param.asInt()) {
     case 1: //Manual
       manualMode = true;
-      if (manualMode != prevManualMode) { //Printer bare en gang for endring
+      if (manualMode != prevManualMode) { //Prints only once
         Serial.print("M");
         prevManualMode = manualMode;
       }
       break;
 
-    case 2: //Auto / Linjefølging
+    case 2: // Auto / Line follow mode
       manualMode = false;
       if (manualMode != prevManualMode) {
         Serial.print("L");
@@ -36,30 +39,35 @@ BLYNK_WRITE(V0) { //skifter mellom auto og manual mode
   }
 }
 
-BLYNK_WRITE(V1)//Stepper som sender 1-4 til Zumo for å bestemme farten
-{
+BLYNK_WRITE(V1) {
+  /*
+  The stepper that sends a value from 1 - 4, used to change the max speed
+  */
   int newStepValue = param.asInt();
   Serial.print(newStepValue);
 }
 
-void manualDriving() { // leser av retings- og ladeknapp og sender til Zumoen
-  if (digitalRead(W) == 1 && moved == false) { //Printer "W" i Serial
+void manualDriving() {
+  /*
+  Reads the direction, WASD, and charge, C, buttons, change
+  */
+  if (digitalRead(W) == 1 && moved == false) { //Prints "W" in the Serial
     Serial.write("W");
     moved = true;
   }
-  if (digitalRead(A) == 1 &&  moved == false) { //Printer "A" i Serial
+  if (digitalRead(A) == 1 &&  moved == false) { //Prints "A"
     Serial.write("A");
     moved = true;
   }
-  if (digitalRead(S) == 1 && moved == false) { //Printer "S" i Serial
+  if (digitalRead(S) == 1 && moved == false) { //Prints "S"
     Serial.write("S");
     moved = true;
   }
-  if (digitalRead(D) == 1 && moved == false) { //Printer "D" i Serial
+  if (digitalRead(D) == 1 && moved == false) { //Prints "D"
     Serial.write("D");
     moved = true;
   }
-  if (digitalRead(C) == 1 && moved == false) { //Printer "C" i Serial
+  if (digitalRead(C) == 1 && moved == false) { //Prints "C"
     Serial.write("C");
     moved = true;
   }
@@ -73,12 +81,15 @@ void manualDriving() { // leser av retings- og ladeknapp og sender til Zumoen
 }
 
 void updateBlynkDisplays() {
+  /*
+  Handles information from the Zumo to be displayed in Blynk
+  */
   if (Serial.available() > 0) {
     inByte = Serial.read();
 
     switch (inByte) {
       case '1': //newSpeedo, new speed
-        while (inByte == 1) inByte = Serial.read(); //Venter på ny verdi i Serial
+        while (inByte == 1) inByte = Serial.read(); //Awaits a new value in the serial
         Blynk.virtualWrite(V5, inByte);
         break;
 
@@ -127,6 +138,9 @@ void updateBlynkDisplays() {
 }
 
 void setup() {
+  /*
+  setup code
+  */
   Serial.begin(9600);
   Blynk.begin(auth, ssid, pass, IPAddress(91, 192, 221, 40), 8080); //ntnu.io server
   while (Blynk.connect() == false) //wait
@@ -134,6 +148,9 @@ void setup() {
 }
 
 void loop() {
+  /*
+  main loop
+  */
   Blynk.run();
   if (manualMode == true) {
     manualDriving();

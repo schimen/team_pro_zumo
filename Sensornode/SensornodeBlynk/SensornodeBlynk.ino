@@ -164,7 +164,9 @@ void sendReadings() {
   */
   readSensors();
 
-  Sensor *chosenSensor; //pointer to chosen sensor object
+  //pointer to chosen sensor object:
+  //(static and initialized as pointer to sensor1 for failproofing)
+  static Sensor *chosenSensor = &sensor1;
 
   //determines chosen sensor based on blynkMenu
   switch (blynkMenuSelection) {
@@ -176,7 +178,7 @@ void sendReadings() {
       chosenSensor = &sensor2;
       break;
 
-    default:  //default statement instead of case 3 for failproofing
+    case 3:
       chosenSensor = &sensor3;
       break;
   }

@@ -5,18 +5,8 @@
 #include "Driving.h"
 #include "Definitions.h"
 
-
 /*
-
-veldig bra jobba, ryddet masse og ting ser bedre ut :D
-
-todo:
-  - sjekk at alt funker
-  - fiks EEPROM
-  - rydd de funksjonene her
-  - test koden
-  - kommenter
-  - få bort magiske tall
+This is the main code file to be uploaded to the Zumo car
 */
 
 //objects
@@ -38,7 +28,9 @@ void writeToESP(uint8_t index, String message, float value) {
 }
 
 void eachSecond() {
-  //send values to esp32:
+  /*
+  send values to esp32:
+  */
   writeToESP(currentSpeedToESP,      "BLYNK speedo: ",          zumo.getSpeed());
   writeToESP(distanceTotalToEsP,     "BLYNK distanceTotal: ",   zumo.getTotalDistance());
   writeToESP(measuredMaxSpeedToESP,  "BLYNK maxspeed: ",        zumo.getMaxSpeed());
@@ -48,7 +40,7 @@ void eachSecond() {
   zumo.checkBatteryHealth();
 
   static bool lowBattery = false;
-  if (zumo.isLowBattery() and lowBattery)  { //Fra defenitions: Index til blynk led: #define lowBatteryToESP 7
+  if (zumo.isLowBattery() and lowBattery)  { //From defenitions: Index til blynk led: #define lowBatteryToESP 7
     //toggle led
   }
   else if (not zumo.isLowBattery() and not lowBattery) {
@@ -60,19 +52,25 @@ void eachSecond() {
 }
 
 void eachMinute() {
+  /*
+  function to be used in timer,interval 1 minute
+  */
   writeToESP(speedSixtyFinalToESP,    "BLYNK average speed: ", zumo.getAverageSpeed());
   writeToESP(distanceSixtyFinalToESP, "BLYNK new distance: ",  zumo.getNewDistance());
 }
 
-void setMode(char input) {  //Velger hvilken modus
+void setMode(char input) {
+  /*
+  Chooses the mode
+  */
   switch (input) {
-    case 'L': //linjefølging
+    case 'L': //Auto mode / Line following
       manualMode = false;
-      zumo.lineSensors.initFiveSensors();  //Starter linjelesings-sensorer
+      zumo.lineSensors.initFiveSensors();  //Starting the line follow sensors
       zumo.calibrateSensors();
       break;
 
-    case 'M': //manuell kjøring
+    case 'M': //manual driving mode
       manualMode = true;
       zumo.motors.setSpeeds(0, 0);
       break;
@@ -81,8 +79,8 @@ void setMode(char input) {  //Velger hvilken modus
 
 void setMaxSpeed(char input) {
   /*
-  Setter maxhastighet for begge kjøremoduser
-  alternativer 1 til 4 som korresponderer med 100 til 400
+  Sets the max speed for both driving mode
+  in steps from 1 to 4, representing 100, 200, 300 and 400.
   */
   switch (input) {
     case '1':
@@ -104,18 +102,24 @@ void setMaxSpeed(char input) {
 }
 
 void setup() {
+  /*
+  setup code
+  */
   zumo.encoders.getCountsAndResetLeft();
   zumo.encoders.getCountsAndResetRight();
   Wire.begin();
   zumo.setupGyro();
-  Serial1.begin(9600); //Den Serial som ESP er koblet til
-  Serial.begin(9600); //Feilsøking
+  Serial1.begin(9600); //The serial which the ESP is connected
+  Serial.begin(9600); //Debugging
   Serial1.flush();
   timer.setInterval(1000L, eachSecond);   //- timer called each second
   timer.setInterval(60000L, eachMinute);  //- timer called each minute
 }
 
 void loop() {
+  /*
+  main loop
+  */
   timer.run();  //start timers
   zumo.checkIfTurned();
   patternDriving(&zumo);  //from "Driving.h"
@@ -132,13 +136,13 @@ void loop() {
     }
 
     if (manualMode == false) {
-      //kjører linje så lenge den ikke får beskjed om å skifte modus
+      //Drives in line mode until it gets another instruction
       while (inChar != 'M') {
         followLine(&zumo);  //from "Driving.h"
         setMaxSpeed(inChar);
         inChar = Serial1.read();
       }
-      manualMode = true; //skifter tilbake til manuell
+      manualMode = true; //Switches back to manual mode
       zumo.motors.setSpeeds(0, 0);
     }
   }

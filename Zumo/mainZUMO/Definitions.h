@@ -1,13 +1,13 @@
 #ifndef Definitions_h
 #define Definitions_h
 
-//----Fra Driving.h----
+//----From Driving.h----
 #define NUM_SENSORS 5
-#define PERPENDICULAR 655  //90 graders sving
-#define ONE_ROTATION 909.7  //ca.11.8cm
+#define PERPENDICULAR 655  //90 degree turn
+#define ONE_ROTATION 909.7  //Approx. 11.8cm
 #define ONE_METER 7750
 
-//----Fra Zumokontroll.cpp, laget indexer for skriving til ESP----
+//----From Zumokontroll.cpp, made indexes for writing to the ESP----
 #define currentSpeedToESP 1
 #define distanceTotalToEsP 2
 #define speedSixtyFinalToESP 3
@@ -18,18 +18,18 @@
 #define chargeCyclesToESP 8
 #define seventyTimeToESP 9
 
-//----Fra gyro.h----
-#define SERVICE 1         //Utført service på batteriet
-#define CHANGED 2          //Utført bytte av batteri
+//----From gyro.h----
+#define SERVICE 1         //Completed a battery service
+#define CHANGED 2         //Completed a battery change
 
-//----Fra Simen----
+//----Battery----
 #define SERVICE 1
 #define CHANGED 2
 #define BATTERY_MAX 100
 #define SEVENTY_LIMIT 0.462
 #define SPEED_CONVERSION 7750
 
-//----Fra lineFollower.h----
+//----From lineFollower.h----
 #define NUM_SENSORS 5
 
 #endif
