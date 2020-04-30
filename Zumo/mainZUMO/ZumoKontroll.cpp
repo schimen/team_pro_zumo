@@ -1,8 +1,10 @@
 #include "ZumoKontroll.h"
 
 ZumoKontroll::ZumoKontroll()  {
-  //constructor
-
+  /*
+  constructor
+  */
+  
   //set start values:
   timeOverSeventyPercent = 0;
   distanceTotal = 0;
@@ -45,10 +47,10 @@ void ZumoKontroll::updateGyro() {
 }
 
 void ZumoKontroll::updateCharge()  {
-/*
-This function updates the values regarding the battery after a charge
-it updates whats left of the battery, how much it has been charged in total, and how many chargin cycles there has been.
-*/
+  /*
+  This function updates the values regarding the battery after a charge
+  it updates whats left of the battery, how much it has been charged in total, and how many chargin cycles there has been.
+  */
   batteryLeft += batteryCharged;
   batteryChargedTotal += batteryCharged; //Counts the total charge.
   batteryChargeCycles = batteryChargedTotal / (BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Checks how many full charging cycles the battery has had
@@ -60,10 +62,10 @@ it updates whats left of the battery, how much it has been charged in total, and
 }
 
 void ZumoKontroll::updateMaxSpeed() {
-  /*
-This function updates the Max Speed.
-If the current speed is higher than the previous max speed, its saved as the new max
-  */
+    /*
+  This function updates the Max Speed.
+  If the current speed is higher than the previous max speed, its saved as the new max
+    */
   float speedo = getSpeed();
   if (speedo >  measuredMaxSpeed) {
     measuredMaxSpeed = speedo;
@@ -71,18 +73,18 @@ If the current speed is higher than the previous max speed, its saved as the new
 }
 
 void ZumoKontroll::updateTotalDistance()  {
-/*
-This function updates the total distance travelled.
-This value is never reset. It's an historic measure of distance travelled
-*/
+  /*
+  This function updates the total distance travelled.
+  This value is never reset. It's an historic measure of distance travelled
+  */
   float distance = getDistanceDriven();
   distanceTotal += distance;
 }
 
 void ZumoKontroll::updateBatteryPercent() {
-/*
-This function updates the battery percentage based on the distance traveller
-*/
+  /*
+  This function updates the battery percentage based on the distance traveller
+  */
   static float batteryCapasity = BATTERY_MAX;
   float distance = getDistanceDriven();
   batteryLeft -= distance;
@@ -91,10 +93,10 @@ This function updates the battery percentage based on the distance traveller
 }
 
 void ZumoKontroll::updateTimeOverSeventyPercent() {
-/*
-This function checks if the car is going faster than 70%
-of max speed, and measures the duration for it
-*/
+  /*
+  This function checks if the car is going faster than 70%
+  of max speed, and measures the duration for it
+  */
   static unsigned long seventyPercentStartTime = millis();
 
   if (getSpeed() >= SEVENTY_LIMIT && seventyCalc == false) {
@@ -108,17 +110,17 @@ of max speed, and measures the duration for it
 }
 
 void ZumoKontroll::setupGyro()  {
-/*
-This function simply initializes the gyro sensor
-*/
+  /*
+  This function simply initializes the gyro sensor
+  */
   gyro.init();
   gyro.enableDefault();
 }
 
 void ZumoKontroll::checkIfTurned() {
   /*
-This function checks if the car is turned around, and for how long.
-Is used to call the battery service and battery change
+  This function checks if the car is turned around, and for how long.
+  Is used to call the battery service and battery change
   */
   static int workDone = 0;
   bool serviceSoundPlayed = false;
@@ -150,9 +152,7 @@ Is used to call the battery service and battery change
     }
 
     if (workDone == SERVICE) {
-      /*
-      Updates the battery variables according to a service
-      */
+      //Updates the battery variables according to a service
       Serial.println("workDone is service");
       batteryChargeCycles = 1;
       batteryChargedTotal = 100;
@@ -162,9 +162,7 @@ Is used to call the battery service and battery change
 
     }
     if (workDone == CHANGED) {
-      /*
-      Updates the battery variables according to a change
-      */
+      //Updates the battery variables according to a change
       batteryChargeCycles = 0;
       Serial.println("workDone is changed");
       batteryLeft = 100;
@@ -176,7 +174,7 @@ Is used to call the battery service and battery change
 
 void ZumoKontroll::calibrateSensors() {
   /*
-This function calibrates the sensors used for line following
+  This function calibrates the sensors used for line following
   */
   for (int i = 0; i < 120; i++) {
     if (i > 30 && i < 90) {
@@ -206,10 +204,10 @@ void ZumoKontroll::chargeBattery(uint32_t chargeTime) {
 }
 
 void ZumoKontroll::checkBatteryHealth() {
-/*
-This function checks if a batteryservice or change
-is needed, and gives a notification
-*/
+  /*
+  This function checks if a batteryservice or change
+  is needed, and gives a notification
+  */
   if (isNewCharge())  {
     updateCharge();
   }
@@ -228,8 +226,8 @@ is needed, and gives a notification
 
 void ZumoKontroll::resetAverageSpeed() {
   /*
-This function resets the variables used for
-calculating and saving the average speed
+  This function resets the variables used for
+  calculating and saving the average speed
   */
   cumulativeSpeed = 0;
   countsSpeed = 0;
@@ -238,9 +236,9 @@ calculating and saving the average speed
 
 void ZumoKontroll::resetEachSecond() {
   /*
-This function resets the encoders between each reading
-while also doing a timestamp. Used for the calculations
-made every second.
+  This function resets the encoders between each reading
+  while also doing a timestamp. Used for the calculations
+  made every second.
   */
   previousResetTime = millis();
   encoders.getCountsAndResetLeft();
@@ -305,7 +303,7 @@ float ZumoKontroll::getDistanceDriven()  {
 
 float ZumoKontroll::getTotalDistance()  {
   /*
-This function returns the total distance travelled
+  This function returns the total distance travelled
   */
   updateTotalDistance();
   return distanceTotal;
@@ -330,7 +328,7 @@ float ZumoKontroll::getSpeed() {
 
 float ZumoKontroll::getMaxSpeed() {
   /*
-This function returns the maximum speed driven
+  This function returns the maximum speed driven
   */
   updateMaxSpeed();
   return measuredMaxSpeed;
