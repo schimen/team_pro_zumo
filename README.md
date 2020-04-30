@@ -24,7 +24,6 @@ Filoversikt:
     - Sensor.cpp
     - SensornodeWebPage.ino
     - data
-    
       - ChartBundle.js
       - blynk_bootleg.svg
       - blynk_bootlegLONG.svg
@@ -35,7 +34,6 @@ Filoversikt:
   - Zumo
     - mainESP
       - mainESP.ino
-  
     - mainZumo
       - beautifulMusic.h
       - Definitions.h
