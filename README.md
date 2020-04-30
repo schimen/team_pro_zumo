@@ -35,14 +35,14 @@ Filoversikt:
     - mainESP
       - mainESP.ino
   
-  - mainZumo
-    - beautifulMusic.h
-    - Definitions.h
-    - Driving.h
-    - Driving.cpp
-    - SimpleTimer.h
-    - SimpleTimer.cpp
-    - ZumoKontroll.h
-    - ZumoKontroll.cpp
-    - mainZUMO.ino
+    - mainZumo
+      - beautifulMusic.h
+      - Definitions.h
+      - Driving.h
+      - Driving.cpp
+      - SimpleTimer.h
+      - SimpleTimer.cpp
+      - ZumoKontroll.h
+      - ZumoKontroll.cpp
+      - mainZUMO.ino
     
