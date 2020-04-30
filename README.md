@@ -24,6 +24,7 @@ Filoversikt:
     - Sensor.cpp
     - SensornodeWebPage.ino
     - data
+    
       - ChartBundle.js
       - blynk_bootleg.svg
       - blynk_bootlegLONG.svg
