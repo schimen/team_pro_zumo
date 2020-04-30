@@ -1,8 +1,4 @@
-/* * * * * * * * * * *     Sensornode Web Page     * * * * * * * * * * *
-  todo:
-    - litt mer kommentarer
-    - lag en god beskrivelse på toppen her
-*/
+/* * * * * * * * * * *     Sensornode Web Page     * * * * * * * * * * */
 
 #include <WiFi.h>
 #include <SPIFFS.h>
@@ -90,6 +86,6 @@ void setup() {
   server.begin();
 }
 
-void loop(){
-
+void loop() {
+  //empty :)
 }
