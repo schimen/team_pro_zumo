@@ -5,6 +5,7 @@ Datateknikk prosjekt for team pro.
 Filoversikt:
 
 - guidance documents
+
   - style_example.cpp
   - style guide for team pro.md
   
@@ -17,7 +18,6 @@ Filoversikt:
     - SensornodePWM.h
     - SensornodePWM.cpp
     - SensornodeBlynk.ino
-    
   - SensornodeWebPage
     - Definitions.h
     - Sensor.h
@@ -29,19 +29,19 @@ Filoversikt:
       - blynk_bootlegLONG.svg
       - midjoo.png
       - index.html
+      
+- Zumo
 
-
-  - Zumo
-    - mainESP
-      - mainESP.ino
-    - mainZumo
-      - beautifulMusic.h
-      - Definitions.h
-      - Driving.h
-      - Driving.cpp
-      - SimpleTimer.h
-      - SimpleTimer.cpp
-      - ZumoKontroll.h
-      - ZumoKontroll.cpp
-      - mainZUMO.ino
+  - mainESP
+    - mainESP.ino
+  - mainZumo
+    - beautifulMusic.h
+    - Definitions.h
+    - Driving.h
+    - Driving.cpp
+    - SimpleTimer.h
+    - SimpleTimer.cpp
+    - ZumoKontroll.h
+    - ZumoKontroll.cpp
+    - mainZUMO.ino
     
