@@ -2,7 +2,9 @@
 #include "beautifulMusic.h"
 
 void followLine(ZumoKontroll *zumo) {
-  //Only used in this function
+  /*
+  Only used in this function
+  */
   static unsigned int lineSensorValues[NUM_SENSORS];
   static int lastError = 0;
 
@@ -23,10 +25,10 @@ void followLine(ZumoKontroll *zumo) {
 }
 
 void manualDriving(ZumoKontroll *zumo, char inChar) {
-/*
-This function handles the input from the ESP. The characters printed defines the actions
-for moving, charging and setting max speed.
-*/
+  /*
+  This function handles the input from the ESP. The characters printed defines the actions
+  for moving, charging and setting max speed.
+  */
   switch (inChar) {
     case 'W': //This case makes the car drive forward, at max speed
       while (inChar == 'W') {
@@ -76,10 +78,10 @@ for moving, charging and setting max speed.
 }
 
 void patternDriving(ZumoKontroll *zumo) {
-/*
-This function checks for physical button pushing, and calls
-the pattern driving accordingly.
-*/
+  /*
+  This function checks for physical button pushing, and calls
+  the pattern driving accordingly.
+  */
   bool btnAIsPressed = zumo->buttonA.getSingleDebouncedRelease();
   bool btnBIsPressed = zumo->buttonB.getSingleDebouncedRelease();
   bool btnCIsPressed = zumo->buttonC.getSingleDebouncedRelease();
@@ -99,10 +101,10 @@ the pattern driving accordingly.
 }
 
 void driveSquare(ZumoKontroll *zumo) {
-/*
-This function is one of three preinstalled patters for automatic Driving.
-This is the Square-driving.
-*/
+  /*
+  This function is one of three preinstalled patters for automatic Driving.
+  This is the Square-driving.
+  */
   Serial.print("GoT");
   zumo->buzzer.playFromProgramSpace(GoT);
   float left;
