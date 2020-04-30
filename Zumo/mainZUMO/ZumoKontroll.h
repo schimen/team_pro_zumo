@@ -78,8 +78,9 @@ class ZumoKontroll  {
     uint32_t getTimeOverSeventyPercent();
 
     //public variables:
-    uint16_t maxSpeed;        //- current max speed
-    float    batteryCharged;  //- ?
+    uint16_t maxSpeed;              //- current max speed
+    float    batteryChargeCycles;   //- Number of full battery charge cycles
+    float    batteryCharged;
 
     //zumo objects:
     L3G                 gyro;
@@ -108,7 +109,6 @@ class ZumoKontroll  {
     float    cumulativeSpeed;         //- cumulative speed for average calculation
     float    measuredMaxSpeed;        //- highest measured speed
     float    batteryLeft;             //- Value for storing the current battery amount
-    float    batteryChargeCycles;     //- Number of full battery charge cycles
     float    batteryChargedTotal;     //- Total amound of battery charged
     bool     turnSense;               //- Used to flag if the car is flipped over
     bool     seventyCalc;             //- Used for timing the duration of driving above 70% of max speed
