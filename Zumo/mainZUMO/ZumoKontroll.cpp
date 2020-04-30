@@ -88,7 +88,7 @@ void ZumoKontroll::updateBatteryPercent() {
   static float batteryCapasity = BATTERY_MAX;
   float distance = getDistanceDriven();
   batteryLeft -= distance;
-  batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Begrenser maks batterikapasitet med 10% for hver hele ladesyklus.
+  batteryCapasity = constrain(batteryCapasity, 0, BATTERY_MAX - (BATTERY_MAX * (ceil(batteryChargeCycles)) / 10)); //Limits the batterys capasity with 10% for each charge cycle
   batteryPercent = batteryLeft / batteryCapasity * 100;
 }
 

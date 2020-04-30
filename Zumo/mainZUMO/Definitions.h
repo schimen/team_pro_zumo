@@ -3,9 +3,9 @@
 
 //----From Driving.h----
 #define NUM_SENSORS 5
-#define PERPENDICULAR 655  //90 degree turn
+#define PERPENDICULAR 655  // Encoder value for 90 degree turn
 #define ONE_ROTATION 909.7  //Approx. 11.8cm
-#define ONE_METER 7750
+#define ONE_METER 7750     // Encoder value for one meter
 
 //----From Zumokontroll.cpp, made indexes for writing to the ESP----
 #define currentSpeedToESP 1
@@ -27,7 +27,7 @@
 #define CHANGED 2
 #define BATTERY_MAX 100
 #define SEVENTY_LIMIT 0.462
-#define SPEED_CONVERSION 7750
+#define SPEED_CONVERSION 7750 // Encoder value for one meter
 
 //----From lineFollower.h----
 #define NUM_SENSORS 5
