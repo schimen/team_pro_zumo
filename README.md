@@ -1,12 +1,30 @@
 # team_pro_zumo
+
 Datateknikk prosjekt for team pro.
 
-[Her er en grei intro til git](https://towardsdatascience.com/getting-started-with-git-and-github-6fcd0f2d4ac6)
+Filoversikt:
 
-Et tips er å bruke GitHub Desktop siden det har en grei UI. Alt: Git bash for uberHax0rz
-Alt: Atom e jo best
-
-Oversikt:
-  - Sensornode mappe for sensornode-modul
-  - Zumo mappe for egendefinert modul
-  - guidance documents for retningslinjer rundt stil
+- guidance documents
+  - style_example.cpp
+  - style guide for team pro.md
+  
+- Senornode
+  - SensornodeBlynk
+    - Definitions.h
+    - Sensor.h
+    - Sensor.cpp
+    - SensornodePWM.h
+    - SensornodePWM.cpp
+    - SensornodeBlynk.ino
+  - SensornodeWebPage
+    - Definitions.h
+    - Sensor.h
+    - Sensor.cpp
+    - SensornodeWebPage.ino
+    - data
+      - ChartBundle.js
+      - blynk_bootleg.svg
+      - blynk_bootlegLONG.svg
+      - midjoo.png
+      - index.html
+ 
