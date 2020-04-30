@@ -5,7 +5,6 @@
 #include "Driving.h"
 #include "Definitions.h"
 
-
 /*
 This is the main code file to be uploaded to the Zumo car
 */
@@ -29,7 +28,9 @@ void writeToESP(uint8_t index, String message, float value) {
 }
 
 void eachSecond() {
-  //send values to esp32:
+  /*
+  send values to esp32:
+  */
   writeToESP(currentSpeedToESP,      "BLYNK speedo: ",          zumo.getSpeed());
   writeToESP(distanceTotalToEsP,     "BLYNK distanceTotal: ",   zumo.getTotalDistance());
   writeToESP(measuredMaxSpeedToESP,  "BLYNK maxspeed: ",        zumo.getMaxSpeed());
@@ -51,11 +52,17 @@ void eachSecond() {
 }
 
 void eachMinute() {
+  /*
+  function to be used in timer,interval 1 minute
+  */
   writeToESP(speedSixtyFinalToESP,    "BLYNK average speed: ", zumo.getAverageSpeed());
   writeToESP(distanceSixtyFinalToESP, "BLYNK new distance: ",  zumo.getNewDistance());
 }
 
-void setMode(char input) {  //Chooses the mode
+void setMode(char input) {
+  /*
+  Chooses the mode
+  */
   switch (input) {
     case 'L': //Auto mode / Line following
       manualMode = false;
@@ -95,6 +102,9 @@ void setMaxSpeed(char input) {
 }
 
 void setup() {
+  /*
+  setup code
+  */
   zumo.encoders.getCountsAndResetLeft();
   zumo.encoders.getCountsAndResetRight();
   Wire.begin();
@@ -107,6 +117,9 @@ void setup() {
 }
 
 void loop() {
+  /*
+  main loop
+  */
   timer.run();  //start timers
   zumo.checkIfTurned();
   patternDriving(&zumo);  //from "Driving.h"
