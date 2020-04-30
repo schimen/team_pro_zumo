@@ -39,11 +39,10 @@ BLYNK_WRITE(V0) {
   }
 }
 
-BLYNK_WRITE(V1)
-/*
-The stepper that sends a value from 1 - 4, used to change the max speed
-*/
-{
+BLYNK_WRITE(V1) {
+  /*
+  The stepper that sends a value from 1 - 4, used to change the max speed
+  */
   int newStepValue = param.asInt();
   Serial.print(newStepValue);
 }
@@ -83,7 +82,7 @@ void manualDriving() {
 
 void updateBlynkDisplays() {
   /*
- Handles information from the Zumo to be displayed in Blynk
+  Handles information from the Zumo to be displayed in Blynk
   */
   if (Serial.available() > 0) {
     inByte = Serial.read();
@@ -139,6 +138,9 @@ void updateBlynkDisplays() {
 }
 
 void setup() {
+  /*
+  setup code
+  */
   Serial.begin(9600);
   Blynk.begin(auth, ssid, pass, IPAddress(91, 192, 221, 40), 8080); //ntnu.io server
   while (Blynk.connect() == false) //wait
@@ -146,6 +148,9 @@ void setup() {
 }
 
 void loop() {
+  /*
+  main loop
+  */
   Blynk.run();
   if (manualMode == true) {
     manualDriving();
