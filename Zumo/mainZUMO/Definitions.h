@@ -22,7 +22,7 @@
 #define SERVICE 1         //Completed a battery service
 #define CHANGED 2         //Completed a battery change
 
-//----From Simen----
+//----Battery----
 #define SERVICE 1
 #define CHANGED 2
 #define BATTERY_MAX 100
