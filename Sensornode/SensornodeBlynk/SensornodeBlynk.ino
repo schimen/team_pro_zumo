@@ -2,14 +2,7 @@
 
   Dette er sensornode-modul for datateknikk prosjekt.
   Denne versjonen bruker blynk.
-
-  Description:
-    This is a program for ESP32 to speak to blynk app: (insert url)
-
-Todo:
-  - description of program (this comment)
-  - make code more readable
-  - clean up unneccessary functions
+  
 */
 
 #include <WiFi.h>
